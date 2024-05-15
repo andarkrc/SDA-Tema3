@@ -61,7 +61,7 @@ void graph_node_destroy(graph_node_t gnode)
 	list_destroy(gnode.in_links);
 }
 
-void graph_add_node(graph_t *graph, graph_node_t *gnode)
+size_t graph_add_node(graph_t *graph, graph_node_t *gnode)
 {
 	// Do I need to make so it takes the first available id or nah?
 	// I don't think it's a pressing issue right now, but ye
@@ -72,6 +72,7 @@ void graph_add_node(graph_t *graph, graph_node_t *gnode)
 		gnode->id = graph->nodes->size;
 		list_push(graph->nodes, &gnode->node);
 		map_add(graph->highway, &gnode->id, &gnode);
+		return gnode->id;
 	} else {
 		old_id_t *old_id;
 		old_id = STRUCT_FROM_MEMBER(old_id_t, graph->old_ids->head, node);
@@ -83,6 +84,7 @@ void graph_add_node(graph_t *graph, graph_node_t *gnode)
 			list_remove(graph->old_ids, 0);
 			graph->old_ids->destructor(&old_id->node);
 		}
+		return gnode->id;
 	}
 }
 
