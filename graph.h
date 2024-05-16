@@ -123,7 +123,7 @@ void graph_node_destroy(graph_node_t gnode);
 size_t graph_add_node(graph_t *graph, graph_node_t *gnode);
 
 /**
- * graph_link_nodes() - Function that adds a link from node 1 to node 2.
+ * graph_link_nodes() - Add a link from node 1 to node 2.
  * @param graph: Pointer to the graph.
  * @param gnode1: POINTER to the 'source' node: source--->destination.
  * @param gnode2: POINTER to the 'destination' node.
@@ -131,8 +131,7 @@ size_t graph_add_node(graph_t *graph, graph_node_t *gnode);
 void graph_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2);
 
 /**
- * graph_link_by_id() - Function that adds a link from node with id1 to
- * 					    node with id2.
+ * graph_link_by_id() - Add a link from node with id1 to node with id2.
  * @param graph: Pointer to the graph.
  * @param id1: ID of the 'source' node.
  * @param id2: ID of the 'destination' node.
@@ -154,6 +153,40 @@ void graph_blink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode
  * @param id2: ID of the second graph node.
  */
 void graph_blink_by_id(graph_t *graph, size_t id1, size_t id2);
+
+/**
+ * graph_unlink_nodes() - Remove the link from node 1 to node 2.
+ * @param graph: Pointer to the graph.
+ * @param gnode1: POINTER to the 'source' node.
+ * @param gnode2: POINTER to the 'destination' node.
+ */
+void graph_unlink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2);
+
+/**
+ * graph_unlink_by_id() - Remove the link from node with id1 to node with id2.
+ * @param graph: Pointer to the graph.
+ * @param id1: ID of the 'source' node.
+ * @param id2: ID of the 'destination' node.
+ */
+void graph_unlink_by_id(graph_t *graph, size_t id1, size_t id2);
+
+/**
+ * graph_unblink_nodes() - Same as graph_unlink_nodes() but both links
+ * 						   are removed.
+ * @param graph: Pointer to the graph.
+ * @param gnode1: POINTER to the first graph node.
+ * @param gnode2: POINTER to the second graph node.
+ */
+void graph_unblink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2);
+
+/**
+ * graph_unblink_by_id() - Same as graph_unlink_by_id() but both link
+ * 						   are removed.
+ * @param graph: Pointer to the graph.
+ * @param id1: ID of the first graph node.
+ * @param id2: ID of the second graph node.
+ */
+void graph_unblink_by_id(graph_t *graph, size_t id1, size_t id2);
 
 /**
  * graph_remove_node() - Completely remove a node from a graph.

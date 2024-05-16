@@ -93,6 +93,18 @@ void graph_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2
 	if (gnode1 == NULL || gnode2 == NULL) {
 		return;
 	}
+	// Check if the link already exists
+	list_node_t *current;
+	current = gnode1->out_links->head;
+	while (current != NULL) {
+		graph_link_t *link;
+		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
+		if (link->link == gnode2) {
+			return;
+		}
+		current = current->next;
+	}
+	// Add the new link
 	graph_link_t *new_link;
 	new_link = graph_link_create(gnode2);
 	list_push(gnode1->out_links, &new_link->node);
@@ -109,6 +121,7 @@ void graph_link_by_id(graph_t *graph, size_t id1, size_t id2)
 	if (map_get_entry(graph->highway, &id2) == NULL) {
 		return;
 	}
+
 	graph_node_t *gnode1 = *(graph_node_t **)map_get_value(graph->highway, &id1);
 	graph_node_t *gnode2 = *(graph_node_t **)map_get_value(graph->highway, &id2);
 
@@ -125,6 +138,67 @@ void graph_blink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode
 {
 	graph_link_nodes(graph, gnode1, gnode2);
 	graph_link_nodes(graph, gnode2, gnode1);
+}
+
+void graph_unlink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2)
+{
+	if (gnode1 == NULL || gnode2 == NULL) {
+		return;
+	}
+	list_node_t *current;
+
+	current = gnode1->out_links->head;
+	while (current != NULL) {
+		graph_link_t *link;
+		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
+		if (link->link == gnode2) {
+			list_node_t *removed;
+			removed = list_remove_node(gnode1->out_links, &link->node);
+			gnode1->out_links->destructor(removed);
+			break;
+		}
+		current = current->next;
+	}
+
+	current = gnode2->in_links->head;
+	while (current != NULL) {
+		graph_link_t *link;
+		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
+		if (link->link == gnode1) {
+			list_node_t *removed;
+			removed = list_remove_node(gnode2->in_links, &link->node);
+			gnode2->in_links->destructor(removed);
+			break;
+		}
+		current = current->next;
+	}
+}
+
+void graph_unlink_by_id(graph_t *graph, size_t id1, size_t id2)
+{
+	if (map_get_entry(graph->highway, &id1) == NULL) {
+		return;
+	}
+	if (map_get_entry(graph->highway, &id2) == NULL) {
+		return;
+	}
+
+	graph_node_t *gnode1 = *(graph_node_t **)map_get_value(graph->highway, &id1);
+	graph_node_t *gnode2 = *(graph_node_t **)map_get_value(graph->highway, &id2);
+
+	graph_unlink_nodes(graph, gnode1, gnode2);
+}
+
+void graph_unblink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2)
+{
+	graph_unlink_nodes(graph, gnode1, gnode2);
+	graph_unlink_nodes(graph, gnode2, gnode2);
+}
+
+void graph_unblink_by_id(graph_t *graph, size_t id1, size_t id2)
+{
+	graph_unlink_by_id(graph, id1, id2);
+	graph_unlink_by_id(graph, id2, id1);
 }
 
 void graph_remove_node(graph_t *graph, graph_node_t *gnode)

@@ -48,23 +48,11 @@ int main(void)
 	graph_blink_by_id(graph, 2, 3);
 	graph_link_by_id(graph, 3, 1);
 	graph_print_ids(graph);
-	graph_remove_node_by_id(graph, 1);
-	graph_remove_node_by_id(graph, 2);
 
-	graph_print_ids(graph);
+	graph_unlink_by_id(graph, 2, 1);
+	graph_unblink_by_id(graph, 3, 2);
+	graph_unblink_by_id(graph, 0, 1);
 
-	test = (test_t *)malloc(sizeof(test_t));
-	test->data = 1;
-	test->gnode = graph_node_create();
-	graph_add_node(graph, &test->gnode);
-	
-	graph_print_ids(graph);
-
-	test = (test_t *)malloc(sizeof(test_t));
-	test->data = 2;
-	test->gnode = graph_node_create();
-	graph_add_node(graph, &test->gnode);
-	
 	graph_print_ids(graph);
 
 	graph_destroy(graph);
