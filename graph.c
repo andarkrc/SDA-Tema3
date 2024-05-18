@@ -89,6 +89,8 @@ size_t graph_add_node(graph_t *graph, graph_node_t *gnode)
 
 void graph_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2)
 {
+	// Seems like 'graph' is unused, but it may be in the future
+	graph = graph;
 	if (gnode1 == NULL || gnode2 == NULL) {
 		return;
 	}
@@ -141,6 +143,8 @@ void graph_blink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode
 
 void graph_unlink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2)
 {
+	// Seems like 'graph' is unused, but it may be in the future
+	graph = graph;
 	if (gnode1 == NULL || gnode2 == NULL) {
 		return;
 	}
@@ -201,7 +205,6 @@ void graph_remove_node(graph_t *graph, graph_node_t *gnode)
 	// Remove all links that point to this node.
 	list_node_t *current;
 	list_node_t *current2;
-	list_node_t *removed;
 	current = gnode->in_links->head;
 	while (current != NULL) {
 		graph_link_t *link;
