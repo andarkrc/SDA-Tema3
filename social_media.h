@@ -32,14 +32,23 @@ typedef struct post_t {
 	graph_node_t gnode; // This is the 'events' member.
 } post_t;
 
+/**
+ * app_create() - Creates an app wrapper (for the social media app).
+ * @return - Pointer to the new app.
+ */
 app_wrapper_t *app_create(void);
 
+/**
+ * app_destroy() - Destroys an app wrapper.
+ * @param app: Pointer to the app to be destroyed.
+ */
 void app_destroy(app_wrapper_t *app);
 
-void user_destructor(list_node_t *node);
-
-void post_destructor(list_node_t *node);
-
-void user_add(app_wrapper_t *app, char *username);
+/**
+ * app_add_user() - Adds a new user to the app.
+ * @param app: Pointer to the app.
+ * @param username: Name of the new user.
+ */
+void app_add_user(app_wrapper_t *app, char *username);
 
 #endif

@@ -26,9 +26,12 @@ static size_t create_post(app_wrapper_t *app, char *title, size_t user_id)
 	return post->id;
 }
 
+// I am sorry, but you will see a lot of 'id' variables.
+// The ID system of the posts is different than the graph's.
+
 static void _create(app_wrapper_t* app, char *username, char *title)
 {
-	user_add(app, username);
+	app_add_user(app, username);
 	size_t uid = *(size_t *)map_get_value(app->user_ids, username);
 	create_post(app, title, uid);
 	printf("Created %s for %s\n", title, username);
@@ -36,7 +39,7 @@ static void _create(app_wrapper_t* app, char *username, char *title)
 
 static void _repost(app_wrapper_t *app, char *username, size_t id)
 {
-	user_add(app, username);
+	app_add_user(app, username);
 	size_t uid = *(size_t *)map_get_value(app->user_ids, username);
 	size_t post_id = *(size_t *)map_get_value(app->post_ids, &id);
 
