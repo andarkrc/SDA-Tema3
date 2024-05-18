@@ -1,4 +1,8 @@
+#ifndef USERS_H
+#define USERS_H
+
 #include <stdint.h>
+#include "graph.h"
 
 /**
  * Initializes the user list
@@ -26,4 +30,4 @@ uint16_t get_user_id(char *name);
 */
 char *get_user_name(uint16_t id);
 
-
+#endif

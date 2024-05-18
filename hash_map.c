@@ -4,15 +4,15 @@ map_t *map_create(size_t max_buckets, size_t key_size, size_t value_size,
 				  void (*destructor)(list_node_t *),
 				  uint (*hash)(void *), int (*keycmp)(void *, void *))
 {
-	map_t *map = (map_t *)malloc(sizeof(map_t));
+	map_t *map = malloc(sizeof(*map));
 	DIE(!map, "Malloc failed\n");
 	map->max_buckets = max_buckets;
 	map->hash = hash;
 	map->keycmp = keycmp;
 	map->key_size = key_size;
 	map->value_size = value_size;
-	size_t buckets_size = max_buckets * sizeof(linked_list_t *);
-	map->buckets = (linked_list_t **)malloc(buckets_size);
+	size_t buckets_size = max_buckets * sizeof(*(map->buckets));
+	map->buckets = malloc(buckets_size);
 	DIE(!map->buckets, "Malloc failed\n");
 	for (size_t i = 0; i < max_buckets; i++) {
 		map->buckets[i] = list_create(destructor);
@@ -59,7 +59,7 @@ void map_add(map_t *map, void *key, void *value)
 	unsigned int bucket = map->hash(key) % map->max_buckets;
 	linked_list_t *list = map->buckets[bucket];
 	// Create the new entry & place it in the list.
-	entry = (map_entry_t *)malloc(sizeof(map_entry_t));
+	entry = malloc(sizeof(*entry));
 	DIE(!entry, "Malloc failed\n");
 
 	entry->key = malloc(map->key_size);

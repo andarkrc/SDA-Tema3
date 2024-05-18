@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "friends.h"
 #include "users.h"
 
-void handle_input_friends(char *input)
+void handle_input_friends(char *input, app_wrapper_t *app)
 {
+	app = app;
 	char *commands = strdup(input);
 	char *cmd = strtok(commands, "\n ");
 

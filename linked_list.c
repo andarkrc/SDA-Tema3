@@ -2,7 +2,7 @@
 
 linked_list_t *list_create(void (*destructor)(list_node_t *))
 {
-	linked_list_t *list = (linked_list_t *)malloc(sizeof(linked_list_t));
+	linked_list_t *list = malloc(sizeof(*list));
 	DIE(!list, "Malloc failed\n");
 	list->size = 0;
 	list->head = NULL;

@@ -10,7 +10,7 @@ static void old_id_destroy(list_node_t *node)
 
 graph_t *graph_create(void (*graph_node_des)(list_node_t *))
 {
-	graph_t *graph = (graph_t *)malloc(sizeof(graph_t));
+	graph_t *graph = malloc(sizeof(*graph));
 	DIE(!graph, "Malloc failed!");
 	graph->nodes = list_create(graph_node_des);
 	graph->highway = map_create(HIGHWAY_BUCKETS, sizeof(size_t),
@@ -36,7 +36,7 @@ static void graph_link_destroy(list_node_t *node)
 
 static graph_link_t *graph_link_create(graph_node_t *gnode)
 {
-	graph_link_t *glink = (graph_link_t *)malloc(sizeof(graph_link_t));
+	graph_link_t *glink = malloc(sizeof(*glink));
 	DIE(!glink, "Malloc failed!");
 	glink->link = gnode;
 	glink->node.prev = NULL;
@@ -231,14 +231,14 @@ void graph_remove_node(graph_t *graph, graph_node_t *gnode)
 		size_t id = gnode->id;
 		old_id_t *old_id;
 		if (id == 0) {
-			old_id = (old_id_t *)malloc(sizeof(old_id_t));
+			old_id = malloc(sizeof(*old_id));
 			DIE(!old_id, "Malloc failed!\n");
 			old_id->id = 0;
 			list_push(graph->old_ids, &old_id->node);
 		} else {
 			size_t prev_id = id - 1;
 			if (graph_get_node(graph, prev_id) != NULL) {
-				old_id = (old_id_t *)malloc(sizeof(old_id_t));
+				old_id = malloc(sizeof(*old_id));
 				DIE(!old_id, "Malloc failed!\n");
 				old_id->id = id;
 				list_push(graph->old_ids, &old_id->node);
