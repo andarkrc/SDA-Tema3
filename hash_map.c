@@ -82,8 +82,7 @@ void map_remove(map_t *map, void *key)
 
 	uint bucket = map->hash(key) % map->max_buckets;
 	linked_list_t *list = map->buckets[bucket];
-	list_remove_node(list, &entry->node);
-	list->destructor(&entry->node);
+	list_purge_node(list, &entry->node);
 }
 
 map_entry_t *map_get_entry(map_t *map, void *key)

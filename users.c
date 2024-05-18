@@ -29,8 +29,15 @@ void init_users(void)
 		users[i] = malloc(size + 1);
 		strcpy(users[i], temp);
 	}
+	fclose(users_db);
 }
 
+void free_users(void) {
+	for (uint16_t i = 0; i < users_number; i++) {
+		free(users[i]);
+	}
+	free(users);
+}
 uint16_t get_user_id(char *name)
 {
 	if (!users)

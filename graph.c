@@ -81,8 +81,7 @@ size_t graph_add_node(graph_t *graph, graph_node_t *gnode)
 		map_add(graph->highway, &gnode->id, &gnode);
 		old_id->id = old_id->id + 1;
 		if (graph_get_node(graph, old_id->id) != NULL) {
-			list_remove(graph->old_ids, 0);
-			graph->old_ids->destructor(&old_id->node);
+			list_purge(graph->old_ids, 0);
 		}
 		return gnode->id;
 	}
@@ -152,9 +151,7 @@ void graph_unlink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnod
 		graph_link_t *link;
 		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
 		if (link->link == gnode2) {
-			list_node_t *removed;
-			removed = list_remove_node(gnode1->out_links, &link->node);
-			gnode1->out_links->destructor(removed);
+			list_purge_node(gnode1->out_links, &link->node);
 			break;
 		}
 		current = current->next;
@@ -165,9 +162,7 @@ void graph_unlink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnod
 		graph_link_t *link;
 		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
 		if (link->link == gnode1) {
-			list_node_t *removed;
-			removed = list_remove_node(gnode2->in_links, &link->node);
-			gnode2->in_links->destructor(removed);
+			list_purge_node(gnode2->in_links, &link->node);
 			break;
 		}
 		current = current->next;
@@ -218,8 +213,7 @@ void graph_remove_node(graph_t *graph, graph_node_t *gnode)
 			graph_link_t *out_link;
 			out_link = STRUCT_FROM_MEMBER(graph_link_t, current2, node);
 			if (out_link->link == gnode) {
-				removed = list_remove_node(linked_node->out_links, &out_link->node);
-				linked_node->out_links->destructor(removed);
+				list_purge_node(linked_node->out_links, &out_link->node);
 				break;
 			}
 			current2 = current2->next;
@@ -228,13 +222,11 @@ void graph_remove_node(graph_t *graph, graph_node_t *gnode)
 	}
 	// Remove the node
 	if (graph->nodes->size == 1) {
-		removed = list_remove_node(graph->nodes, graph->nodes->head);
 		map_remove(graph->highway, &gnode->id);
-		graph->nodes->destructor(removed);
+		list_purge_node(graph->nodes, graph->nodes->head);
 	} else if (graph->nodes->tail == &gnode->node) {
-		removed = list_remove_node(graph->nodes, &gnode->node);
 		map_remove(graph->highway, &gnode->id);
-		graph->nodes->destructor(removed);
+		list_purge_node(graph->nodes, &gnode->node);
 	} else {
 		size_t id = gnode->id;
 		old_id_t *old_id;
@@ -253,16 +245,14 @@ void graph_remove_node(graph_t *graph, graph_node_t *gnode)
 			}
 		}
 		map_remove(graph->highway, &id);
-		list_remove_node(graph->nodes, &gnode->node);
-		graph->nodes->destructor(&gnode->node);
+		list_purge_node(graph->nodes, &gnode->node);
 	}
 	current = graph->old_ids->head;
 	while (current != NULL) {
 		current2 = current->next;
 		old_id_t *old_id = STRUCT_FROM_MEMBER(old_id_t, current, node);
 		if (old_id->id >= graph->nodes->size) {
-			list_remove_node(graph->old_ids, &old_id->node);
-			graph->old_ids->destructor(&old_id->node);
+			list_purge_node(graph->old_ids, &old_id->node);
 		}
 		current = current2;
 	}

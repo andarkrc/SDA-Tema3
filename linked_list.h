@@ -94,6 +94,25 @@ list_node_t *list_remove(linked_list_t *list, size_t index);
 list_node_t *list_remove_node(linked_list_t *list, list_node_t *node);
 
 /**
+ * list_purge() - list_remove() but also frees the node.
+ * @param list
+ * @param index: Index of the node to be purged.
+ */
+void list_purge(linked_list_t *list, size_t index);
+
+/**
+ * list_purge_node() - list_remove_node() but also frees the node.
+ * @param list
+ * @param node
+ */
+void list_purge_node(linked_list_t *list, list_node_t *node);
+
+/**
+ * list_purge_all() - list_remove_all()
+ */
+void list_purge_all(linked_list_t *list);
+
+/**
  * list_get_node() - Returns the node at a specified index in the list.
  * @param list
  * @param index

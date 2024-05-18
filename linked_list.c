@@ -154,6 +154,33 @@ list_node_t *list_remove(linked_list_t *list, size_t index)
 	return node;
 }
 
+void list_purge(linked_list_t *list, size_t index)
+{
+	list_node_t *removed = list_remove(list, index);
+	if (removed == NULL) {
+		return;
+	}
+	if (list->destructor) {
+		list->destructor(removed);
+	}
+}
+
+void list_purge_node(linked_list_t *list, list_node_t *node)
+{
+	list_node_t *removed = list_remove_node(list, node);
+	if (removed == NULL) {
+		return;
+	}
+	if (list->destructor) {
+		list->destructor(removed);
+	}
+}
+
+void list_purge_all(linked_list_t *list)
+{
+	list_remove_all(list);
+}
+
 void list_push(linked_list_t *list, list_node_t *node)
 {
 	list_add(list, list->size, node);

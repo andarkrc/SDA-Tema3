@@ -6,6 +6,11 @@
 void init_users(void);
 
 /**
+ * Frees the user list
+ */
+void free_users(void);
+
+/**
  * Find the user_id of a user by it's name
  *
  * @param name - The name of the user
@@ -20,3 +25,5 @@ uint16_t get_user_id(char *name);
  * @return the name of a user, of NULL if not found
 */
 char *get_user_name(uint16_t id);
+
+
