@@ -115,4 +115,38 @@ void app_add_user(app_wrapper_t *app, char *username)
 	map_add(app->user_ids, user->username, &new_id);
 }
 
+size_t app_get_user_graph_id(app_wrapper_t *app, char *username)
+{
+	void *graph_id = map_get_value(app->user_ids, username);
+	return (graph_id == NULL) ? (size_t)(-1) : *(size_t *)graph_id;
+}
+
+size_t app_create_post(app_wrapper_t *app, char *title, size_t user_id)
+{
+	post_t *post = malloc(sizeof(*post));
+	DIE(!post, "Malloc failed!\n");
+	post->id = app->post_id_counter;
+	post->post_level = 0;
+	post->title = malloc(POST_TITLE_LENGTH);
+	DIE(!post->title, "Malloc failed!\n");
+	if (title != NULL) {
+		strcpy(post->title, title);
+	}
+	post->user_id = user_id;
+	post->gnode = graph_node_create();
+	size_t new_id = graph_add_node(app->posts, &post->gnode);
+	map_add(app->post_ids, &post->id, &new_id);
+	post->like_count = 0;
+	post->likes = map_create(USERS_BUCKETS, sizeof(size_t), sizeof(char),
+							 simple_entry_destroy, hash_size_t, sizetcmp);
+	app->post_id_counter++;
+	return post->id;
+}
+
+size_t app_get_post_graph_id(app_wrapper_t *app, size_t id)
+{
+	void *graph_id = map_get_value(app->post_ids, &id);
+	return (graph_id == NULL) ? (size_t)(-1) : *(size_t *)graph_id;
+}
+
 // End of region

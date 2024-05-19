@@ -214,6 +214,14 @@ void graph_remove_node_by_id(graph_t *graph, size_t id);
 graph_node_t *graph_get_node(graph_t *graph, size_t id);
 
 /**
+ * graph_node_get_first_inlink() - Use mainly for trees. 
+ * 								   It gets the gnode's parent.
+ * @param gnode
+ * @return - First gnode that links to the provided node.
+ */
+graph_node_t *graph_node_get_first_inlink(graph_node_t *gnode);
+
+/**
  * graph_print_ids() - Prints the graph (using the node's id).
  * @param graph: Pointer to the graph to be printed.
  */

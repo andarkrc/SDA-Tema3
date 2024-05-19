@@ -278,6 +278,17 @@ graph_node_t *graph_get_node(graph_t *graph, size_t id)
 	return (node == NULL) ? NULL : *node;
 }
 
+graph_node_t *graph_node_get_first_inlink(graph_node_t *gnode)
+{
+	list_node_t *node;
+	node = gnode->in_links->head;
+	if (node == NULL) {
+		return NULL;
+	}
+	graph_link_t *link = STRUCT_FROM_MEMBER(graph_link_t, node, node);
+	return link->link;
+}
+
 void graph_print_ids(graph_t *graph)
 {
 	list_node_t *current = graph->nodes->head;
