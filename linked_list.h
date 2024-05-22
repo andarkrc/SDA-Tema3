@@ -16,6 +16,9 @@ typedef struct linked_list_t {
 	void (*destructor)(list_node_t *);
 } linked_list_t;
 
+// Some of the functions can be macros.
+// But I don't care. I am not creating os kernels.
+// Also 'memory is cheap'. (actual comment from the linux kernel :/)
 
 /**
  * list_create() - Creates a new linked list.
