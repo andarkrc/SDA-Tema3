@@ -28,7 +28,7 @@ typedef struct post_t {
 	char *title;
 	size_t user_id;
 	uint like_count;
-	map_t *likes;
+	map_t *likes; // Seems kinda overkill for a job fit for a bitmap.
 	graph_node_t gnode; // This is the 'events' member.
 } post_t;
 

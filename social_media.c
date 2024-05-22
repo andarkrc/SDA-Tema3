@@ -10,6 +10,7 @@
 #include "friends.h"
 #include "users.h"
 
+// Good luck removing a user from the app >:)
 
 /**
  * Entrypoint of the program, compiled with different defines for each task
