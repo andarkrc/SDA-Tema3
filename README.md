@@ -1,6 +1,6 @@
 #### Echipa Tema 3 SDA:
 - andrei.popa0810
-- papis
+- marius.baican
 
 Because there was no need for change, the implementation of the linked list and hashmap are the same
 as the one I (Andrei) implemented for Tema 2. The documentation is also the same. I also am the main contributor to the README.

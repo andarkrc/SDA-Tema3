@@ -38,6 +38,7 @@ void free_users(void) {
 	}
 	free(users);
 }
+
 uint16_t get_user_id(char *name)
 {
 	if (!users)

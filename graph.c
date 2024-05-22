@@ -87,6 +87,27 @@ size_t graph_add_node(graph_t *graph, graph_node_t *gnode)
 	}
 }
 
+char graph_has_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2) {
+	graph = graph;
+	list_node_t *current = gnode1->out_links->head;
+	while (current != NULL) {
+		graph_link_t *link;
+		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
+		if (link->link == gnode2) {
+			return 1;
+		}
+		current = current->next;
+	}
+	return 0;
+}
+
+char graph_has_link_by_id(graph_t *graph, size_t id1, size_t id2) {
+	graph_node_t *gnode1 = graph_get_node(graph, id1);
+	graph_node_t *gnode2 = graph_get_node(graph, id2);
+
+	return graph_has_link_nodes(graph, gnode1, gnode2);
+}
+
 void graph_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2)
 {
 	// Seems like 'graph' is unused, but it may be in the future
@@ -95,16 +116,8 @@ void graph_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2
 		return;
 	}
 	// Check if the link already exists
-	list_node_t *current;
-	current = gnode1->out_links->head;
-	while (current != NULL) {
-		graph_link_t *link;
-		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
-		if (link->link == gnode2) {
-			return;
-		}
-		current = current->next;
-	}
+	if (graph_has_link_nodes(graph, gnode1, gnode2))
+		return;
 	// Add the new link
 	graph_link_t *new_link;
 	new_link = graph_link_create(gnode2);

@@ -172,4 +172,22 @@ graph_node_t *graph_node_get_first_inlink(graph_node_t *gnode);
  */
 void graph_print_ids(graph_t *graph);
 
+/**
+ * graph_has_link_by_id() - Find out if there is a link between
+ * 							two given (via id) nodes.
+ * @param graph: Pointer to the graph of nodes.
+ * @param id1: The ID of the first node.
+ * @param id2: The ID of the second node.
+*/
+char graph_has_link_by_id(graph_t *graph, size_t id1, size_t id2);
+
+/**
+ * graph_has_link_nodes() - Find out if there is a link between
+ * 							two given nodes.
+ * @param graph: Pointer to the graph of nodes.
+ * @param gnode1: Pointer to the first node.
+ * @param gnode2: Pointer to the second node.
+*/
+char graph_has_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2);
+
 #endif

@@ -4,34 +4,249 @@
 #include "friends.h"
 #include "users.h"
 
+static void _add_friend(app_wrapper_t *app);
+
+static void _remove_friend(app_wrapper_t *app);
+
+static void _friend_suggestions(app_wrapper_t *app);
+
+//static void _user_distance(app_wrapper_t *app);
+
+static void _common_friends(app_wrapper_t *app);
+
+static void _friend_count(app_wrapper_t *app);
+
+static void _most_popular_friend(app_wrapper_t *app);
+
+static void _bubble_sort(uint16_t *array, int array_size);
+
+static void _swap_uint16(uint16_t *a, uint16_t *b);
+
+static void _print_friends(uint16_t *friend_ids, int friend_count);
+
 void handle_input_friends(char *input, app_wrapper_t *app)
 {
 	app = app;
 	char *commands = strdup(input);
 	char *cmd = strtok(commands, "\n ");
 
-	if (!cmd)
+	if (!cmd) {
+		free(commands);
 		return;
+	}
 
 	if (!strcmp(cmd, "add"))
-		(void)cmd;
-		// TODO: Add function
+		_add_friend(app);
 	else if (!strcmp(cmd, "remove"))
-		(void)cmd;
-		// TODO: Add function
+		_remove_friend(app);
 	else if (!strcmp(cmd, "suggestions"))
-		(void)cmd;
-		// TODO: Add function
+		_friend_suggestions(app);
 	else if (!strcmp(cmd, "distance"))
 		(void)cmd;
 		// TODO: Add function
 	else if (!strcmp(cmd, "common"))
-		(void)cmd;
-		// TODO: Add function
+		_common_friends(app);
 	else if (!strcmp(cmd, "friends"))
-		(void)cmd;
-		// TODO: Add function
+		_friend_count(app);
 	else if (!strcmp(cmd, "popular"))
-		(void)cmd;
-		// TODO: Add function
+		_most_popular_friend(app);
+		
+	free(commands);
 }
+
+static void _add_friend(app_wrapper_t *app)
+{
+	char *user1 = strtok(NULL, "\n ");
+	char *user2 = strtok(NULL, "\n");
+
+	app_add_user(app, user1);
+	app_add_user(app, user2);
+
+	size_t user1_id = app_get_user_graph_id(app, user1);
+	size_t user2_id = app_get_user_graph_id(app, user2);
+
+	graph_blink_by_id(app->users, user1_id, user2_id);
+
+	printf("Added connection %s - %s\n", user1, user2);
+}
+
+static void _remove_friend(app_wrapper_t *app)
+{
+	char *user1 = strtok(NULL, "\n ");
+	char *user2 = strtok(NULL, "\n");
+
+	app_add_user(app, user1);
+	app_add_user(app, user2);
+
+	size_t user1_id = app_get_user_graph_id(app, user1);
+	size_t user2_id = app_get_user_graph_id(app, user2);
+
+	graph_unblink_by_id(app->users, user1_id, user2_id);
+
+	printf("Removed connection %s - %s\n", user1, user2);
+}
+
+static void _friend_count (app_wrapper_t *app)
+{
+	char *username = strtok(NULL, "\n");
+
+	app_add_user(app, username);
+
+	size_t id = app_get_user_graph_id(app, username);
+
+	graph_node_t *gnode = graph_get_node(app->users, id);
+
+	printf("%s has %lu friends\n", username, gnode->out_links->size);
+}
+
+static void _common_friends(app_wrapper_t *app)
+{
+	char *username1 = strtok(NULL, "\n ");
+	char *username2 = strtok(NULL, "\n");
+
+	app_add_user(app, username1);
+	app_add_user(app, username2);
+
+	size_t id1 = app_get_user_graph_id(app, username1);
+	size_t id2 = app_get_user_graph_id(app, username2);
+
+	graph_node_t *user1 = graph_get_node(app->users, id1);
+	graph_node_t *user2 = graph_get_node(app->users, id2);
+
+	uint16_t *friend_ids = malloc(sizeof(*friend_ids) * MAX_PEOPLE);
+	int idx = 0;
+
+	list_node_t *temp_node = user1->out_links->head;
+	while (temp_node) {
+		graph_link_t *user1_friend = STRUCT_FROM_MEMBER(graph_link_t, temp_node, node);
+		if (graph_has_link_nodes(app->users, user1_friend->link, user2)) {
+			user_t *user = STRUCT_FROM_MEMBER(user_t, user1_friend->link, gnode);
+			friend_ids[idx++] = get_user_id(user->username);
+		}
+		temp_node = temp_node->next;
+	}
+	_bubble_sort(friend_ids, idx);
+
+	if (idx) {
+		printf("The common friends between %s and %s are:\n", username1, username2);
+		_print_friends(friend_ids, idx);
+	} else {
+		printf("No common friends for %s and %s\n", username1, username2);
+	}
+
+	free(friend_ids);
+}
+
+static void _friend_suggestions(app_wrapper_t *app)
+{
+	char *username = strtok(NULL, "\n ");
+
+	app_add_user(app, username);
+
+	size_t id = app_get_user_graph_id(app, username);
+
+	graph_node_t *gnode = graph_get_node(app->users, id);
+
+	uint16_t *friend_ids = malloc(sizeof(*friend_ids) * MAX_PEOPLE);
+	DIE(!friend_ids, "Malloc failed\n");
+	int idx = 0;
+
+	list_node_t *temp1 = gnode->out_links->head;
+	while (temp1) {
+		graph_link_t *friend = STRUCT_FROM_MEMBER(graph_link_t, temp1, node);
+		list_node_t *temp2 = friend->link->out_links->head;
+		while (temp2) {
+			graph_link_t *friends_friend = STRUCT_FROM_MEMBER(graph_link_t, temp2, node);
+			user_t *user = STRUCT_FROM_MEMBER(user_t, friends_friend->link, gnode);
+			if (!graph_has_link_nodes(app->users, gnode, friends_friend->link))
+				if (gnode != friends_friend->link) {
+					printf("%u:$%s$\n", get_user_id(user->username), user->username);
+					friend_ids[idx++] = get_user_id(user->username);
+				}
+			temp2 = temp2->next;
+		}
+		temp1 = temp1->next;
+	}
+
+	_bubble_sort(friend_ids, idx);
+
+	if (idx) {
+		printf("Suggestions for %s:\n", username);
+		_print_friends(friend_ids, idx);
+	} else {
+		printf("There are no suggestions for %s\n", username);
+	}
+
+	free(friend_ids);
+}
+
+static void _most_popular_friend(app_wrapper_t *app)
+{
+	char *username = strtok(NULL, "\n");
+
+	app_add_user(app, username);
+
+	size_t id = app_get_user_graph_id(app, username);
+	graph_node_t *gnode = graph_get_node(app->users, id);
+	list_node_t *temp_node = gnode->out_links->head;
+
+	char *most_popular = username;
+	size_t max_friends = gnode->out_links->size;
+
+	while (temp_node) {
+		graph_link_t *friend = STRUCT_FROM_MEMBER(graph_link_t, temp_node, node);
+		size_t friend_count = friend->link->out_links->size;
+		if (friend_count >= max_friends) {
+			if (friend_count != gnode->out_links->size) {
+				user_t *user = STRUCT_FROM_MEMBER(user_t, friend->link, gnode);
+				if (friend_count > max_friends) {
+					most_popular = user->username;
+				} else {
+					uint16_t friend_id = get_user_id(user->username);
+					uint16_t popular_id = get_user_id(most_popular);
+
+					if (friend_id < popular_id) {
+						most_popular = user->username;
+					}
+				}
+			}
+			max_friends = friend_count;
+		}
+		temp_node = temp_node->next;
+	}
+	if (most_popular == username)
+		printf("%s is the most popular\n", username);
+	else
+		printf("%s is the most popular friend of %s\n", most_popular, username);
+}
+
+static void _swap_uint16(uint16_t *a, uint16_t *b)
+{
+	uint16_t temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+static void _bubble_sort(uint16_t *array, int array_size)
+{
+	char sorted = 0;
+
+	while (!sorted) {
+		sorted = 1;
+		for (int i = 0; i < array_size - 1; i++){
+			if (array[i] > array[i + 1]) {
+				_swap_uint16(&array[i], &array[i + 1]);
+				sorted = 0;
+			}
+		}
+		array_size--;
+	}
+}
+
+static void _print_friends(uint16_t *friend_ids, int friend_count)
+{
+	for (int i = 0; i < friend_count; i++)
+		printf("%p\n", get_user_name(friend_ids[i]));
+}
+
+
