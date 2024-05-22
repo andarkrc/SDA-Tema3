@@ -28,6 +28,8 @@ static void _delete_post(app_wrapper_t *app);
 
 static void _get_reposts(app_wrapper_t *app);
 
+static void _ratio(app_wrapper_t *app);
+
 void handle_input_posts(char *input, app_wrapper_t *app)
 {
 	char *commands = strdup(input);
@@ -52,9 +54,9 @@ void handle_input_posts(char *input, app_wrapper_t *app)
 	else if (!strcmp(cmd, "like")) {
 		_like(app);
 	}
-	else if (!strcmp(cmd, "ratio"))
-		(void)cmd;
-		// TODO: Add function
+	else if (!strcmp(cmd, "ratio")) {
+		_ratio(app);
+	}
 	else if (!strcmp(cmd, "delete")) {
 		_delete_post(app);
 	}
@@ -107,7 +109,7 @@ static void _repost(app_wrapper_t *app)
 	repost->post_level = post->post_level + 1;
 
 	graph_link_by_id(app->posts, graph_post_id, graph_repost_id);
-	printf("Created Repost #%lu for %s\n", repost_id, username);
+	printf("Created repost #%lu for %s\n", repost_id, username);
 }
 
 static void _common_repost(app_wrapper_t *app)
@@ -170,8 +172,12 @@ static void _common_repost(app_wrapper_t *app)
 static void _like(app_wrapper_t *app)
 {
 	char *username = strtok(NULL, "\n ");
-	char *post_id = strtok(NULL, "\n");
+	char *post_id = strtok(NULL, "\n ");
+	char *repost_id = strtok(NULL, "\n");
 	size_t id = (size_t)atoi(post_id);
+	if (repost_id != NULL) {
+		id = (size_t)atoi(repost_id);
+	}
 
 	app_add_user(app, username);
 	size_t graph_post_id = app_get_post_graph_id(app, id);
@@ -182,12 +188,20 @@ static void _like(app_wrapper_t *app)
 	if (map_has_key(post->likes, &uid)) {
 		post->like_count--;
 		map_remove(post->likes, &uid);
-		printf("%s unliked %s\n", username, post->title);
+		if (repost_id == NULL) {
+			printf("User %s unliked post %s\n", username, post->title);
+		} else {
+			printf("User %s unliked repost %s\n", username, post->title);
+		}
 		return;
 	}
 	post->like_count++;
 	map_add(post->likes, &uid, &exists);
-	printf("%s liked %s\n", username, post->title);
+	if (repost_id == NULL) {
+		printf("User %s liked post %s\n", username, post->title);
+	} else {
+		printf("User %s liked repost %s\n", username, post->title);
+	}
 	return;
 }
 
@@ -204,7 +218,7 @@ static void _get_likes(app_wrapper_t *app)
 	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
 	post_t *post = STRUCT_FROM_MEMBER(post_t, gnode, gnode);
 	if (post->post_level == 0) {
-		printf("Post: %s has %u likes\n", post->title, post->like_count);
+		printf("Post %s has %u likes\n", post->title, post->like_count);
 	} else {
 		printf("Repost #%lu has %u likes\n", post->id, post->like_count);
 	}
@@ -239,7 +253,7 @@ static void _delete_post(app_wrapper_t *app)
 	strcpy(title, post->title);
 	_delete_post_rec(app->posts, gnode);
 	if (repost_id != NULL) {
-		printf("Deleted Repost #%lu\n", id);
+		printf("Deleted repost #%lu of post %s\n", id, title);
 		free(title);
 		return;
 	}
@@ -254,7 +268,7 @@ static void _print_repost(graph_node_t *gnode, app_wrapper_t *app)
 	gnode = graph_get_node(app->users, uid);
 	user_t *user = STRUCT_FROM_MEMBER(user_t, gnode, gnode);
 	if (post->post_level == 0) {
-		printf("%s - Post #%lu by %s\n", post->title, post->id, user->username);
+		printf("%s - Post by %s\n", post->title, user->username);
 	} else {
 		printf("Repost #%lu by %s\n", post->id, user->username);
 	}
@@ -284,4 +298,30 @@ static void _get_reposts(app_wrapper_t *app)
 	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
 	
 	_get_reposts_rec(gnode, app);
+}
+
+static void _ratio(app_wrapper_t *app)
+{
+	char *post_id = strtok(NULL, "\n");
+	size_t id = (size_t)atoi(post_id);
+	size_t graph_post_id = app_get_post_graph_id(app, id);
+	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
+	post_t *post = STRUCT_FROM_MEMBER(post_t, gnode, gnode);
+	post_t *ratio = post;
+	list_node_t *current = gnode->out_links->head;
+	graph_link_t *link;
+	while (current != NULL) {
+		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
+		post_t *repost = STRUCT_FROM_MEMBER(post_t, link->link, gnode);
+		if (repost->like_count > ratio->like_count) {
+			
+			ratio = repost;
+		}
+		current = current->next;
+	}
+	if (ratio == post) {
+		printf("The original post is the highest rated\n");
+	} else {
+		printf("Post %lu got ratio'd by repost %lu\n", post->id, ratio->id);
+	}
 }
