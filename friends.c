@@ -10,7 +10,7 @@ static void _remove_friend(app_wrapper_t *app);
 
 static void _friend_suggestions(app_wrapper_t *app);
 
-//static void _user_distance(app_wrapper_t *app);
+static void _user_distance(app_wrapper_t *app);
 
 static void _common_friends(app_wrapper_t *app);
 
@@ -42,8 +42,7 @@ void handle_input_friends(char *input, app_wrapper_t *app)
 	else if (!strcmp(cmd, "suggestions"))
 		_friend_suggestions(app);
 	else if (!strcmp(cmd, "distance"))
-		(void)cmd;
-		// TODO: Add function
+		_user_distance(app);
 	else if (!strcmp(cmd, "common"))
 		_common_friends(app);
 	else if (!strcmp(cmd, "friends"))
@@ -52,6 +51,82 @@ void handle_input_friends(char *input, app_wrapper_t *app)
 		_most_popular_friend(app);
 		
 	free(commands);
+}
+
+struct next_usr_t {
+	size_t id;
+	list_node_t node;
+};
+
+static void next_usr_dest(list_node_t *node)
+{
+	struct next_usr_t *nu;
+	nu = STRUCT_FROM_MEMBER(struct next_usr_t, node, node);
+	free(nu);
+}
+
+static void _user_distance(app_wrapper_t *app)
+{
+	char *username1 = strtok(NULL, "\n ");
+	char *username2 = strtok(NULL, "\n");
+
+	app_add_user(app, username1);
+	app_add_user(app, username2);
+
+	size_t graph_id1 = app_get_user_graph_id(app, username1);
+	size_t graph_id2 = app_get_user_graph_id(app, username2);
+
+	map_t *distance = map_create(USERS_BUCKETS, sizeof(size_t), sizeof(size_t),
+								 simple_entry_destroy, hash_size_t, sizetcmp);
+	size_t dist0 = 0;
+	map_add(distance, &graph_id1, &dist0);
+
+	linked_list_t *q = list_create(next_usr_dest);
+	struct next_usr_t *first = malloc(sizeof(*first));
+	first->id = graph_id1;
+	list_push(q, &first->node);
+
+	list_node_t *q_head;
+	struct next_usr_t *next_usr;
+	while (!list_empty(q)) {
+		if (map_has_key(distance, &graph_id2)) {
+			break;
+		}
+		q_head = list_remove(q, 0);
+
+		// Go through all nodes of this child
+		next_usr = STRUCT_FROM_MEMBER(struct next_usr_t, q_head, node);
+
+		graph_node_t *gnode;
+		gnode = graph_get_node(app->users, next_usr->id);
+		list_node_t *current = gnode->out_links->head;
+		while (current != NULL) {
+			graph_link_t *link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
+			if (!map_has_key(distance, &link->link->id)) {
+				struct next_usr_t *new = malloc(sizeof(*new));
+				new->id = link->link->id;
+				size_t new_dist = *(size_t *)map_get_value(distance, &gnode->id) + 1;
+				list_push(q, &new->node);
+				map_add(distance, &link->link->id, &new_dist);
+				if (new->id == graph_id2) {
+					break;
+				}
+			}
+			current = current->next;
+		}
+
+		q->destructor(q_head);
+	}
+
+	if (map_has_key(distance, &graph_id2)) {
+		size_t dist = *(size_t *)map_get_value(distance, &graph_id2);
+		printf("The distance between %s - %s is %lu\n", username1, username2, dist);
+	} else {
+		printf("There is no way to get from %s to %s\n", username1, username2);
+	}
+
+	list_destroy(q);
+	map_destroy(distance);
 }
 
 static void _add_friend(app_wrapper_t *app)

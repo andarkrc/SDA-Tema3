@@ -10,8 +10,10 @@ void handle_input_feed(char *input, app_wrapper_t *app)
 	char *commands = strdup(input);
 	char *cmd = strtok(commands, "\n ");
 
-	if (!cmd)
+	if (!cmd){
+		free(commands);
 		return;
+	}
 
 	if (!strcmp(cmd, "feed"))
 		(void)cmd;
@@ -25,4 +27,6 @@ void handle_input_feed(char *input, app_wrapper_t *app)
 	else if (!strcmp(cmd, "common-groups"))
 		(void)cmd;
 		// TODO: Add function
+
+	free(commands);
 }
