@@ -20,7 +20,6 @@ int main(void)
 	// I don't even think I need this.
 	// I just went off and created something else on my own.
 	init_users();
-
 	app_wrapper_t *app = app_create();
 
 	char *input = (char *)malloc(MAX_COMMAND_LEN);
@@ -40,6 +39,8 @@ int main(void)
 		#endif
 
 		#ifdef TASK_3
+		handle_input_friends(input, app);
+		handle_input_posts(input, app);
 		handle_input_feed(input, app);
 		#endif
 	}

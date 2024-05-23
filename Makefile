@@ -11,13 +11,13 @@ build: friends posts feed
 # add it here, separated by space
 UTILS = users.o
 
-friends: $(UTILS) friends.o social_media.c linked_list.c hash_map.c graph.c utils.c
+friends: $(UTILS) friends.o social_media.c linked_list.c hash_map.c graph.c utils.c set.c
 	$(CC) $(CFLAGS) -D TASK_1 -o $@ $^
 
-posts: $(UTILS) posts.o social_media.c linked_list.c hash_map.c graph.c utils.c
+posts: $(UTILS) posts.o social_media.c linked_list.c hash_map.c graph.c utils.c set.c
 	$(CC) $(CFLAGS) -D TASK_2 -o $@ $^
 	
-feed: $(UTILS) posts.o friends.o feed.o social_media.c linked_list.c hash_map.c graph.c utils.c
+feed: $(UTILS) posts.o friends.o feed.o social_media.c linked_list.c hash_map.c graph.c utils.c set.c
 	$(CC) $(CFLAGS) -D TASK_3 -o $@ $^
 
 social_media_friends.o:

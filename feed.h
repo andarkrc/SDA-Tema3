@@ -2,6 +2,7 @@
 #define FEED_H
 
 #include "social_media.h"
+#include "set.h"
 
 /**
  * Function that handles the calling of every command from task 3

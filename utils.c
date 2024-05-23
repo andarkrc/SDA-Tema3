@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <string.h>
 
 uint hash_uint(void *key)
 {
@@ -34,6 +35,23 @@ uint hash_size_t(void *key)
     return uint_key;
 }
 
+size_t strtosizet(char *str)
+{
+    size_t len = strlen(str);
+    if (len == 0) {
+        return 0;
+    }
+    size_t result = 0;
+    for (; len != 0; len--) {
+        if (*str < '0' || *str > '9') {
+            return 0;
+        }
+        result = result * 10 + ((*str) - '0');
+        str++;
+    }
+    return result;
+}
+
 int sizetcmp(void *uint1, void *uint2)
 {
     size_t ui1 = *(size_t *)uint1;
@@ -42,6 +60,19 @@ int sizetcmp(void *uint1, void *uint2)
         return 1;
     }
     if (ui1 < ui2) {
+        return -1;
+    }
+    return 0;
+}
+
+int ptrcmp(void *ptr1, void *ptr2)
+{
+    void *p1 = *(void **)ptr1;
+    void *p2 = *(void **)ptr2;
+    if (p1 > p2) {
+        return 1;
+    }
+    if (p1 < p2) {
         return -1;
     }
     return 0;

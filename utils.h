@@ -26,5 +26,8 @@ uint hash_string(void *key);
 uint hash_size_t(void *key);
 
 int sizetcmp(void *uint1, void *uint2);
+int ptrcmp(void *ptr1, void *ptr2);
+
+size_t strtosizet(char *str);
 
 #endif

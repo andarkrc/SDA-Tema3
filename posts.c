@@ -75,7 +75,7 @@ static void _create(app_wrapper_t* app)
 	char *username = strtok(NULL, "\n ");
 	char *title = strtok(NULL, "\n");
 	app_add_user(app, username);
-	size_t uid = *(size_t *)map_get_value(app->user_ids, username);
+	size_t uid = app_get_user_graph_id(app, username);
 	app_create_post(app, title, uid);
 	printf("Created %s for %s\n", title, username);
 }
@@ -86,10 +86,10 @@ static void _repost(app_wrapper_t *app)
 	char *post_id_str = strtok(NULL, "\n ");
 	char *repost_id_str = strtok(NULL, "\n");
 	size_t id;
-	id = (size_t)atoi(post_id_str);
+	id = strtosizet(post_id_str);
 	if (repost_id_str != NULL) {
 		// Repost of repost
-		id = (size_t)atoi(repost_id_str);
+		id = strtosizet(repost_id_str);
 	}
 
 	app_add_user(app, username);
@@ -118,8 +118,8 @@ static void _common_repost(app_wrapper_t *app)
 	post_id = post_id;
 	char *repost_id1 = strtok(NULL, "\n ");
 	char *repost_id2 = strtok(NULL, "\n");
-	size_t id1 = (size_t)atoi(repost_id1);
-	size_t id2 = (size_t)atoi(repost_id2);
+	size_t id1 = strtosizet(repost_id1);
+	size_t id2 = strtosizet(repost_id2);
 
 	size_t graph_id1 = app_get_post_graph_id(app, id1);
 	size_t graph_id2 = app_get_post_graph_id(app, id2);
@@ -174,9 +174,9 @@ static void _like(app_wrapper_t *app)
 	char *username = strtok(NULL, "\n ");
 	char *post_id = strtok(NULL, "\n ");
 	char *repost_id = strtok(NULL, "\n");
-	size_t id = (size_t)atoi(post_id);
+	size_t id = strtosizet(post_id);
 	if (repost_id != NULL) {
-		id = (size_t)atoi(repost_id);
+		id = strtosizet(repost_id);
 	}
 
 	app_add_user(app, username);
@@ -209,9 +209,9 @@ static void _get_likes(app_wrapper_t *app)
 {
 	char *post_id = strtok(NULL, "\n ");
 	char *repost_id = strtok(NULL, "\n");
-	size_t id = (size_t)atoi(post_id);
+	size_t id = strtosizet(post_id);
 	if (repost_id != NULL) {
-		id = (size_t)atoi(repost_id);
+		id = strtosizet(repost_id);
 	}
 
 	size_t graph_post_id = app_get_post_graph_id(app, id);
@@ -242,9 +242,9 @@ static void _delete_post(app_wrapper_t *app)
 {
 	char *post_id = strtok(NULL, "\n ");
 	char *repost_id = strtok(NULL, "\n");
-	size_t id = (size_t)atoi(post_id);
+	size_t id = strtosizet(post_id);
 	if (repost_id != NULL) {
-		id = (size_t)atoi(repost_id);
+		id = strtosizet(repost_id);
 	}
 	size_t graph_post_id = app_get_post_graph_id(app, id);
 	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
@@ -290,9 +290,9 @@ static void _get_reposts(app_wrapper_t *app)
 {
 	char *post_id = strtok(NULL, "\n ");
 	char *repost_id = strtok(NULL, "\n");
-	size_t id = (size_t)atoi(post_id);
+	size_t id = strtosizet(post_id);
 	if (repost_id != NULL) {
-		id = (size_t)atoi(repost_id);
+		id = strtosizet(repost_id);
 	}
 	size_t graph_post_id = app_get_post_graph_id(app, id);
 	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
@@ -303,7 +303,7 @@ static void _get_reposts(app_wrapper_t *app)
 static void _ratio(app_wrapper_t *app)
 {
 	char *post_id = strtok(NULL, "\n");
-	size_t id = (size_t)atoi(post_id);
+	size_t id = strtosizet(post_id);
 	size_t graph_post_id = app_get_post_graph_id(app, id);
 	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
 	post_t *post = STRUCT_FROM_MEMBER(post_t, gnode, gnode);
