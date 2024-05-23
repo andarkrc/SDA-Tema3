@@ -160,7 +160,6 @@ static void _friend_suggestions(app_wrapper_t *app)
 			user_t *user = STRUCT_FROM_MEMBER(user_t, friends_friend->link, gnode);
 			if (!graph_has_link_nodes(app->users, gnode, friends_friend->link))
 				if (gnode != friends_friend->link) {
-					printf("%u:$%s$\n", get_user_id(user->username), user->username);
 					friend_ids[idx++] = get_user_id(user->username);
 				}
 			temp2 = temp2->next;
@@ -245,8 +244,14 @@ static void _bubble_sort(uint16_t *array, int array_size)
 
 static void _print_friends(uint16_t *friend_ids, int friend_count)
 {
-	for (int i = 0; i < friend_count; i++)
-		printf("%p\n", get_user_name(friend_ids[i]));
+	if (friend_count != 0) {
+		printf("%s\n", get_user_name(friend_ids[0]));
+	}
+	for (int i = 1; i < friend_count; i++) {
+		if (friend_ids[i - 1] != friend_ids[i]) {
+			printf("%s\n", get_user_name(friend_ids[i]));
+		}
+	}
 }
 
 
