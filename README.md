@@ -177,7 +177,7 @@ as the one I (Andrei) implemented for Tema 2. The documentation is also the same
 	```
 	And when I thought that things were getting better, the old style checker came back to ruin everything. As always
 	it has a little
-    <a href = "https://cdn.discordapp.com/attachments/1087366715614179338/1236297841761194007/image.png?ex=66377f96&is=66362e16&hm=7cf45e39b429b356bcd5df93ced9b144af60ab455c8f378cee547a3b8f916c4d&" target="_blank">
+    <a href = "https://cdn.discordapp.com/attachments/1087366715614179338/1243464133005803521/image.png?ex=665191b7&is=66504037&hm=aea134b622ba0e2c2a5d4d3c22af6e844e8882ec848d97033b8406cf35aa6624&" target="_blank">
     problem
     </a>
     with these macros. :( 
