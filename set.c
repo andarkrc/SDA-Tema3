@@ -30,11 +30,11 @@ void set_destroy(set_t *set)
 char set_contains(set_t *set, void *data)
 {
 	list_node_t *current = set->list->head;
-	while (current != NULL) {
+	while (current) {
 		set_element_t *elem = STRUCT_FROM_MEMBER(set_element_t, current, node);
-		if (set->datacmp(elem->data, data) == 0) {
+		if (set->datacmp(elem->data, data) == 0)
 			return 1;
-		}
+
 		current = current->next;
 	}
 	return 0;
@@ -42,9 +42,8 @@ char set_contains(set_t *set, void *data)
 
 void set_add(set_t *set, void *data)
 {
-	if (set_contains(set, data)) {
+	if (set_contains(set, data))
 		return;
-	}
 
 	set_element_t *new_elem = malloc(sizeof(*new_elem));
 	DIE(!new_elem, "Malloc failed\n");
@@ -57,7 +56,7 @@ void set_add(set_t *set, void *data)
 void set_remove(set_t *set, void *data)
 {
 	list_node_t *current = set->list->head;
-	while (current != NULL) {
+	while (current) {
 		set_element_t *elem = STRUCT_FROM_MEMBER(set_element_t, current, node);
 		if (set->datacmp(elem->data, data) == 0) {
 			list_purge_node(set->list, current);
@@ -72,11 +71,11 @@ set_t *set_intersect(set_t *set1, set_t *set2)
 	set_t *intersect = set_create(set1->list->destructor, set1->datacmp,
 								  set1->data_size);
 	list_node_t *current = set1->list->head;
-	while (current != NULL) {
+	while (current) {
 		set_element_t *elem = STRUCT_FROM_MEMBER(set_element_t, current, node);
-		if (set_contains(set2, elem->data)) {
+		if (set_contains(set2, elem->data))
 			set_add(intersect, elem->data);
-		}
+
 		current = current->next;
 	}
 
@@ -88,14 +87,14 @@ set_t *set_union(set_t *set1, set_t *set2)
 	set_t *sunion = set_create(set1->list->destructor, set1->datacmp,
 							   set1->data_size);
 	list_node_t *current = set1->list->head;
-	while (current != NULL) {
+	while (current) {
 		set_element_t *elem = STRUCT_FROM_MEMBER(set_element_t, current, node);
 		set_add(sunion, elem->data);
 		current = current->next;
 	}
 
 	current = set2->list->head;
-	while (current != NULL) {
+	while (current) {
 		set_element_t *elem = STRUCT_FROM_MEMBER(set_element_t, current, node);
 		set_add(sunion, elem->data);
 		current = current->next;

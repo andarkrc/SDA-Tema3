@@ -14,7 +14,7 @@
 // Damn, my implementation uses some memory. Maybe it's not that much.
 // For 500 posts it uses  ~1.3 MB of ram. Idk if it should be concerning.
 
-static void _create(app_wrapper_t* app);
+static void _create(app_wrapper_t *app);
 
 static void _repost(app_wrapper_t *app);
 
@@ -42,35 +42,27 @@ void handle_input_posts(char *input, app_wrapper_t *app)
 
 	// Using some strtok magic, but we can always change it
 	// so we give the command as parameter.
-	if (!strcmp(cmd, "create")) {
+	if (!strcmp(cmd, "create"))
 		_create(app);
-	}
-	else if (!strcmp(cmd, "repost")) {
+	else if (!strcmp(cmd, "repost"))
 		_repost(app);
-	}
-	else if (!strcmp(cmd, "common-repost")) {
+	else if (!strcmp(cmd, "common-repost"))
 		_common_repost(app);
-	}
-	else if (!strcmp(cmd, "like")) {
+	else if (!strcmp(cmd, "like"))
 		_like(app);
-	}
-	else if (!strcmp(cmd, "ratio")) {
+	else if (!strcmp(cmd, "ratio"))
 		_ratio(app);
-	}
-	else if (!strcmp(cmd, "delete")) {
+	else if (!strcmp(cmd, "delete"))
 		_delete_post(app);
-	}
-	else if (!strcmp(cmd, "get-likes")) {
+	else if (!strcmp(cmd, "get-likes"))
 		_get_likes(app);
-	}
-	else if (!strcmp(cmd, "get-reposts")) {
+	else if (!strcmp(cmd, "get-reposts"))
 		_get_reposts(app);
-	}
-	
+
 	free(commands);
 }
 
-static void _create(app_wrapper_t* app)
+static void _create(app_wrapper_t *app)
 {
 	char *username = strtok(NULL, "\n ");
 	char *title = strtok(NULL, "\n");
@@ -87,7 +79,7 @@ static void _repost(app_wrapper_t *app)
 	char *repost_id_str = strtok(NULL, "\n");
 	size_t id;
 	id = strtosizet(post_id_str);
-	if (repost_id_str != NULL) {
+	if (repost_id_str) {
 		// Repost of repost
 		id = strtosizet(repost_id_str);
 	}
@@ -99,7 +91,7 @@ static void _repost(app_wrapper_t *app)
 
 	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
 	post_t *post = STRUCT_FROM_MEMBER(post_t, gnode, gnode);
-	
+
 	size_t repost_id = app_create_post(app, post->title, uid);
 	// Get the id of the repost in the graph.
 	size_t graph_repost_id = app_get_post_graph_id(app, repost_id);
@@ -152,7 +144,7 @@ static void _common_repost(app_wrapper_t *app)
 	do {
 		parent1 = graph_node_get_first_inlink(&post1->gnode);
 		parent2 = graph_node_get_first_inlink(&post2->gnode);
-		if (parent1 == NULL) {
+		if (!parent1) {
 			post1 = NULL;
 			post2 = NULL;
 			break;
@@ -160,7 +152,7 @@ static void _common_repost(app_wrapper_t *app)
 		post1 = STRUCT_FROM_MEMBER(post_t, parent1, gnode);
 		post2 = STRUCT_FROM_MEMBER(post_t, parent2, gnode);
 	} while (post1 != post2);
-	if (post1 == NULL) {
+	if (!post1) {
 		// The reposts don't have a common repost.
 		printf("I don't know why you got here. Good luck\n");
 		return;
@@ -175,9 +167,8 @@ static void _like(app_wrapper_t *app)
 	char *post_id = strtok(NULL, "\n ");
 	char *repost_id = strtok(NULL, "\n");
 	size_t id = strtosizet(post_id);
-	if (repost_id != NULL) {
+	if (repost_id)
 		id = strtosizet(repost_id);
-	}
 
 	app_add_user(app, username);
 	size_t graph_post_id = app_get_post_graph_id(app, id);
@@ -188,21 +179,21 @@ static void _like(app_wrapper_t *app)
 	if (map_has_key(post->likes, &uid)) {
 		post->like_count--;
 		map_remove(post->likes, &uid);
-		if (repost_id == NULL) {
+
+		if (!repost_id)
 			printf("User %s unliked post %s\n", username, post->title);
-		} else {
+		else
 			printf("User %s unliked repost %s\n", username, post->title);
-		}
+
 		return;
 	}
 	post->like_count++;
 	map_add(post->likes, &uid, &exists);
-	if (repost_id == NULL) {
+
+	if (!repost_id)
 		printf("User %s liked post %s\n", username, post->title);
-	} else {
+	else
 		printf("User %s liked repost %s\n", username, post->title);
-	}
-	return;
 }
 
 static void _get_likes(app_wrapper_t *app)
@@ -210,18 +201,16 @@ static void _get_likes(app_wrapper_t *app)
 	char *post_id = strtok(NULL, "\n ");
 	char *repost_id = strtok(NULL, "\n");
 	size_t id = strtosizet(post_id);
-	if (repost_id != NULL) {
+	if (repost_id)
 		id = strtosizet(repost_id);
-	}
 
 	size_t graph_post_id = app_get_post_graph_id(app, id);
 	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
 	post_t *post = STRUCT_FROM_MEMBER(post_t, gnode, gnode);
-	if (post->post_level == 0) {
+	if (post->post_level == 0)
 		printf("Post %s has %u likes\n", post->title, post->like_count);
-	} else {
+	else
 		printf("Repost #%lu has %u likes\n", post->id, post->like_count);
-	}
 }
 
 static void _delete_post_rec(graph_t *graph, graph_node_t *gnode)
@@ -229,7 +218,7 @@ static void _delete_post_rec(graph_t *graph, graph_node_t *gnode)
 	linked_list_t *children = gnode->out_links;
 	list_node_t *current = children->head;
 	list_node_t *backup;
-	while (current != NULL) {
+	while (current) {
 		backup = current->next;
 		graph_link_t *child = STRUCT_FROM_MEMBER(graph_link_t, current, node);
 		_delete_post_rec(graph, child->link);
@@ -243,16 +232,16 @@ static void _delete_post(app_wrapper_t *app)
 	char *post_id = strtok(NULL, "\n ");
 	char *repost_id = strtok(NULL, "\n");
 	size_t id = strtosizet(post_id);
-	if (repost_id != NULL) {
+	if (repost_id)
 		id = strtosizet(repost_id);
-	}
+
 	size_t graph_post_id = app_get_post_graph_id(app, id);
 	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
 	post_t *post = STRUCT_FROM_MEMBER(post_t, gnode, gnode);
 	char *title = malloc(POST_TITLE_LENGTH);
 	strcpy(title, post->title);
 	_delete_post_rec(app->posts, gnode);
-	if (repost_id != NULL) {
+	if (repost_id) {
 		printf("Deleted repost #%lu of post %s\n", id, title);
 		free(title);
 		return;
@@ -267,11 +256,10 @@ static void _print_repost(graph_node_t *gnode, app_wrapper_t *app)
 	size_t uid = post->user_id;
 	gnode = graph_get_node(app->users, uid);
 	user_t *user = STRUCT_FROM_MEMBER(user_t, gnode, gnode);
-	if (post->post_level == 0) {
+	if (post->post_level == 0)
 		printf("%s - Post by %s\n", post->title, user->username);
-	} else {
+	else
 		printf("Repost #%lu by %s\n", post->id, user->username);
-	}
 }
 
 static void _get_reposts_rec(graph_node_t *gnode, app_wrapper_t *app)
@@ -279,7 +267,7 @@ static void _get_reposts_rec(graph_node_t *gnode, app_wrapper_t *app)
 	linked_list_t *children = gnode->out_links;
 	list_node_t *current = children->head;
 	_print_repost(gnode, app);
-	while (current != NULL) {
+	while (current) {
 		graph_link_t *child = STRUCT_FROM_MEMBER(graph_link_t, current, node);
 		_get_reposts_rec(child->link, app);
 		current = current->next;
@@ -291,12 +279,12 @@ static void _get_reposts(app_wrapper_t *app)
 	char *post_id = strtok(NULL, "\n ");
 	char *repost_id = strtok(NULL, "\n");
 	size_t id = strtosizet(post_id);
-	if (repost_id != NULL) {
+	if (repost_id)
 		id = strtosizet(repost_id);
-	}
+
 	size_t graph_post_id = app_get_post_graph_id(app, id);
 	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
-	
+
 	_get_reposts_rec(gnode, app);
 }
 
@@ -310,18 +298,16 @@ static void _ratio(app_wrapper_t *app)
 	post_t *ratio = post;
 	list_node_t *current = gnode->out_links->head;
 	graph_link_t *link;
-	while (current != NULL) {
+	while (current) {
 		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
 		post_t *repost = STRUCT_FROM_MEMBER(post_t, link->link, gnode);
-		if (repost->like_count > ratio->like_count) {
-			
+		if (repost->like_count > ratio->like_count)
 			ratio = repost;
-		}
+
 		current = current->next;
 	}
-	if (ratio == post) {
+	if (ratio == post)
 		printf("The original post is the highest rated\n");
-	} else {
+	else
 		printf("Post %lu got ratio'd by repost %lu\n", post->id, ratio->id);
-	}
 }

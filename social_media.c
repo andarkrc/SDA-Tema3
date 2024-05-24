@@ -69,9 +69,8 @@ static void post_destructor(list_node_t *node)
 	graph_node_t *gnode = STRUCT_FROM_MEMBER(graph_node_t, node, node);
 	post_t *post = STRUCT_FROM_MEMBER(post_t, gnode, gnode);
 
-	if (post->title != NULL) {
+	if (post->title)
 		free(post->title);
-	}
 
 	graph_node_destroy(post->gnode);
 	map_destroy(post->likes);
@@ -85,7 +84,7 @@ app_wrapper_t *app_create(void)
 	DIE(!app, "Malloc failed!\n");
 	app->users = graph_create(user_destructor);
 	app->posts = graph_create(post_destructor);
-	app->user_ids = map_create(USERS_BUCKETS, USERNAME_LENGTH, sizeof(size_t), 
+	app->user_ids = map_create(USERS_BUCKETS, USERNAME_LENGTH, sizeof(size_t),
 							   simple_entry_destroy, hash_string, strkeycmp);
 	app->post_ids = map_create(POSTS_BUCKETS, sizeof(size_t), sizeof(size_t),
 							   simple_entry_destroy, hash_size_t, sizetcmp);
@@ -104,9 +103,9 @@ void app_destroy(app_wrapper_t *app)
 
 void app_add_user(app_wrapper_t *app, char *username)
 {
-	if (map_has_key(app->user_ids, username)) {
+	if (map_has_key(app->user_ids, username))
 		return;
-	}
+
 	user_t *user = malloc(sizeof(*user));
 	DIE(!user, "Malloc failed!\n");
 	user->username = malloc(USERNAME_LENGTH);
@@ -120,7 +119,7 @@ void app_add_user(app_wrapper_t *app, char *username)
 size_t app_get_user_graph_id(app_wrapper_t *app, char *username)
 {
 	void *graph_id = map_get_value(app->user_ids, username);
-	return (graph_id == NULL) ? (size_t)(-1) : *(size_t *)graph_id;
+	return (!graph_id) ? (size_t)(-1) : *(size_t *)graph_id;
 }
 
 size_t app_create_post(app_wrapper_t *app, char *title, size_t user_id)
@@ -131,9 +130,9 @@ size_t app_create_post(app_wrapper_t *app, char *title, size_t user_id)
 	post->post_level = 0;
 	post->title = malloc(POST_TITLE_LENGTH);
 	DIE(!post->title, "Malloc failed!\n");
-	if (title != NULL) {
+	if (title)
 		strcpy(post->title, title);
-	}
+
 	post->user_id = user_id;
 	post->gnode = graph_node_create();
 	size_t new_id = graph_add_node(app->posts, &post->gnode);
@@ -148,7 +147,7 @@ size_t app_create_post(app_wrapper_t *app, char *title, size_t user_id)
 size_t app_get_post_graph_id(app_wrapper_t *app, size_t id)
 {
 	void *graph_id = map_get_value(app->post_ids, &id);
-	return (graph_id == NULL) ? (size_t)(-1) : *(size_t *)graph_id;
+	return (!graph_id) ? (size_t)(-1) : *(size_t *)graph_id;
 }
 
 // End of region

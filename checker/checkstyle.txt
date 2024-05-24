@@ -1,125 +1,8 @@
-./utils.c:5: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:7: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:8: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:9: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:11: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:16: CHECK:SPACING: No space is necessary after a cast
-./utils.c:16: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:17: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:18: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:20: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:21: ERROR:CODE_INDENT: code indent should use tabs where possible
-./utils.c:21: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:23: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:28: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:30: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:31: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:32: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:34: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:39: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:40: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:41: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:41: WARNING:BRACES: braces {} are not necessary for single statement blocks
-./utils.c:42: ERROR:CODE_INDENT: code indent should use tabs where possible
-./utils.c:42: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:43: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:44: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:44: WARNING:BRACES: braces {} are not necessary for single statement blocks
-./utils.c:45: ERROR:CODE_INDENT: code indent should use tabs where possible
-./utils.c:45: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:46: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:47: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.c:48: WARNING:MISSING_EOF_NEWLINE: adding a line without newline at end of file
-./social_media.h:59: ERROR:TRAILING_WHITESPACE: trailing whitespace
-./social_media.h:66: WARNING:SPACE_BEFORE_TAB: please, no space before tabs
-./social_media.h:69: ERROR:TRAILING_WHITESPACE: trailing whitespace
-./social_media.h:71: WARNING:SPACE_BEFORE_TAB: please, no space before tabs
-./social_media.h:72: WARNING:SPACE_BEFORE_TAB: please, no space before tabs
-./social_media.h:78: WARNING:SPACE_BEFORE_TAB: please, no space before tabs
-./social_media.h:81: ERROR:TRAILING_WHITESPACE: trailing whitespace
-./social_media.h:83: WARNING:SPACE_BEFORE_TAB: please, no space before tabs
-./social_media.h:84: WARNING:SPACE_BEFORE_TAB: please, no space before tabs
-./social_media.h:88: WARNING:MISSING_EOF_NEWLINE: adding a line without newline at end of file
-./friends.c:53: ERROR:TRAILING_WHITESPACE: trailing whitespace
-./friends.c:89: WARNING:SPACING: space prohibited between function name and open parenthesis '('
-./friends.c:121: CHECK:LONG_LINE: line length of 87 exceeds 80 columns
-./friends.c:123: CHECK:LONG_LINE: line length of 81 exceeds 80 columns
-./friends.c:131: CHECK:LONG_LINE: line length of 84 exceeds 80 columns
-./friends.c:159: CHECK:LONG_LINE: line length of 89 exceeds 80 columns
-./friends.c:160: CHECK:LONG_LINE: line length of 83 exceeds 80 columns
-./friends.c:163: CHECK:LONG_LINE: line length of 85 exceeds 80 columns
-./friends.c:197: CHECK:LONG_LINE: line length of 81 exceeds 80 columns
-./friends.c:208: WARNING:BRACES: braces {} are not necessary for single statement blocks
-./friends.c:236: ERROR:SPACING: space required before the open brace '{'
-./friends.c:252: CHECK:LINE_SPACING: Please don't use multiple blank lines
-./social_media.c:71: WARNING:BRACES: braces {} are not necessary for single statement blocks
-./social_media.c:71: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "post->title"
-./social_media.c:87: ERROR:TRAILING_WHITESPACE: trailing whitespace
-./social_media.c:106: WARNING:BRACES: braces {} are not necessary for single statement blocks
-./social_media.c:122: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "!graph_id"
-./social_media.c:133: WARNING:BRACES: braces {} are not necessary for single statement blocks
-./social_media.c:133: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "title"
-./social_media.c:150: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "!graph_id"
-./social_media.c:153: WARNING:MISSING_EOF_NEWLINE: adding a line without newline at end of file
-./utils.h:10: CHECK:SPACING: No space is necessary after a cast
 ./utils.h:10: CHECK:MACRO_ARG_PRECEDENCE: Macro argument 'struct' may be better as '(struct)' to avoid precedence issues
 ./utils.h:10: CHECK:MACRO_ARG_PRECEDENCE: Macro argument 'member' may be better as '(member)' to avoid precedence issues
 ./utils.h:12: CHECK:MACRO_ARG_REUSE: Macro argument reuse 'struct' - possible side-effects?
 ./utils.h:12: CHECK:MACRO_ARG_PRECEDENCE: Macro argument 'struct' may be better as '(struct)' to avoid precedence issues
 ./utils.h:12: CHECK:MACRO_ARG_PRECEDENCE: Macro argument 'member_address' may be better as '(member_address)' to avoid precedence issues
-./utils.h:16: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.h:17: ERROR:CODE_INDENT: code indent should use tabs where possible
-./utils.h:17: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.h:18: ERROR:CODE_INDENT: code indent should use tabs where possible
-./utils.h:18: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.h:19: ERROR:CODE_INDENT: code indent should use tabs where possible
-./utils.h:19: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.h:20: ERROR:CODE_INDENT: code indent should use tabs where possible
-./utils.h:20: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.h:21: ERROR:CODE_INDENT: code indent should use tabs where possible
-./utils.h:21: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.h:22: WARNING:LEADING_SPACE: please, no spaces at the start of a line
-./utils.h:30: WARNING:MISSING_EOF_NEWLINE: adding a line without newline at end of file
-./posts.c:17: ERROR:POINTER_LOCATION: "foo* bar" should be "foo *bar"
-./posts.c:45: WARNING:BRACES: braces {} are not necessary for any arm of this statement
-./posts.c:48: ERROR:ELSE_AFTER_BRACE: else should follow close brace '}'
-./posts.c:51: ERROR:ELSE_AFTER_BRACE: else should follow close brace '}'
-./posts.c:54: ERROR:ELSE_AFTER_BRACE: else should follow close brace '}'
-./posts.c:57: ERROR:ELSE_AFTER_BRACE: else should follow close brace '}'
-./posts.c:60: ERROR:ELSE_AFTER_BRACE: else should follow close brace '}'
-./posts.c:63: ERROR:ELSE_AFTER_BRACE: else should follow close brace '}'
-./posts.c:66: ERROR:ELSE_AFTER_BRACE: else should follow close brace '}'
-./posts.c:69: ERROR:TRAILING_WHITESPACE: trailing whitespace
-./posts.c:73: ERROR:POINTER_LOCATION: "foo* bar" should be "foo *bar"
-./posts.c:90: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "repost_id_str"
-./posts.c:102: ERROR:TRAILING_WHITESPACE: trailing whitespace
-./posts.c:155: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "!parent1"
-./posts.c:163: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "!post1"
-./posts.c:178: WARNING:BRACES: braces {} are not necessary for single statement blocks
-./posts.c:178: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "repost_id"
-./posts.c:191: WARNING:BRACES: braces {} are not necessary for any arm of this statement
-./posts.c:191: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "!repost_id"
-./posts.c:200: WARNING:BRACES: braces {} are not necessary for any arm of this statement
-./posts.c:200: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "!repost_id"
-./posts.c:206: WARNING:RETURN_VOID: void function return statements are not generally useful
-./posts.c:213: WARNING:BRACES: braces {} are not necessary for single statement blocks
-./posts.c:213: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "repost_id"
-./posts.c:220: WARNING:BRACES: braces {} are not necessary for any arm of this statement
-./posts.c:232: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "current"
-./posts.c:246: WARNING:BRACES: braces {} are not necessary for single statement blocks
-./posts.c:246: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "repost_id"
-./posts.c:255: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "repost_id"
-./posts.c:270: WARNING:BRACES: braces {} are not necessary for any arm of this statement
-./posts.c:282: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "current"
-./posts.c:294: WARNING:BRACES: braces {} are not necessary for single statement blocks
-./posts.c:294: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "repost_id"
-./posts.c:299: ERROR:TRAILING_WHITESPACE: trailing whitespace
-./posts.c:313: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "current"
-./posts.c:316: WARNING:BRACES: braces {} are not necessary for single statement blocks
-./posts.c:317: ERROR:TRAILING_WHITESPACE: trailing whitespace
-./posts.c:317: CHECK:BRACES: Blank lines aren't necessary after an open brace '{'
-./posts.c:322: WARNING:BRACES: braces {} are not necessary for any arm of this statement
-./posts.c:327: WARNING:MISSING_EOF_NEWLINE: adding a line without newline at end of file
 ./linked_list.h:16: WARNING:FUNCTION_ARGUMENTS: function definition argument 'list_node_t *' should also have an identifier name
 ./linked_list.h:26: WARNING:SPACE_BEFORE_TAB: please, no space before tabs
 ./linked_list.h:27: ERROR:TRAILING_WHITESPACE: trailing whitespace
@@ -132,6 +15,12 @@
 ./linked_list.h:142: WARNING:SPACE_BEFORE_TAB: please, no space before tabs
 ./linked_list.h:146: CHECK:LINE_SPACING: Please don't use multiple blank lines
 ./linked_list.h:147: WARNING:MISSING_EOF_NEWLINE: adding a line without newline at end of file
+./set.h:14: WARNING:FUNCTION_ARGUMENTS: function definition argument 'void *' should also have an identifier name
+./set.h:14: WARNING:FUNCTION_ARGUMENTS: function definition argument 'void *' should also have an identifier name
+./set.h:36: ERROR:TRAILING_WHITESPACE: trailing whitespace
+./set.h:46: WARNING:SPACE_BEFORE_TAB: please, no space before tabs
+./set.h:87: WARNING:SPACE_BEFORE_TAB: please, no space before tabs
+./set.h:90: WARNING:MISSING_EOF_NEWLINE: adding a line without newline at end of file
 ./users.h:33: WARNING:MISSING_EOF_NEWLINE: adding a line without newline at end of file
 ./hash_map.c:14: CHECK:UNNECESSARY_PARENTHESES: Unnecessary parentheses around map->buckets
 ./hash_map.c:17: WARNING:BRACES: braces {} are not necessary for single statement blocks
@@ -178,6 +67,30 @@
 ./hash_map.h:95: ERROR:TRAILING_WHITESPACE: trailing whitespace
 ./hash_map.h:102: WARNING:SPACE_BEFORE_TAB: please, no space before tabs
 ./hash_map.h:106: WARNING:MISSING_EOF_NEWLINE: adding a line without newline at end of file
+./feed.c:28: ERROR:SPACING: space required before the open brace '{'
+./feed.c:33: WARNING:BRACES: braces {} are not necessary for any arm of this statement
+./feed.c:36: ERROR:ELSE_AFTER_BRACE: else should follow close brace '}'
+./feed.c:39: ERROR:ELSE_AFTER_BRACE: else should follow close brace '}'
+./feed.c:42: ERROR:ELSE_AFTER_BRACE: else should follow close brace '}'
+./feed.c:54: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "current"
+./feed.c:77: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "current"
+./feed.c:81: ERROR:POINTER_LOCATION: "(foo**)" should be "(foo **)"
+./feed.c:84: CHECK:LONG_LINE: line length of 88 exceeds 80 columns
+./feed.c:104: ERROR:TRAILING_WHITESPACE: trailing whitespace
+./feed.c:117: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "current"
+./feed.c:120: ERROR:POINTER_LOCATION: "(foo**)" should be "(foo **)"
+./feed.c:132: CHECK:LONG_LINE: line length of 84 exceeds 80 columns
+./feed.c:142: WARNING:BRACES: braces {} are not necessary for single statement blocks
+./feed.c:147: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "current"
+./feed.c:171: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "current"
+./feed.c:174: WARNING:BRACES: braces {} are not necessary for single statement blocks
+./feed.c:180: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "current"
+./feed.c:183: WARNING:BRACES: braces {} are not necessary for single statement blocks
+./feed.c:204: CHECK:LONG_LINE: line length of 87 exceeds 80 columns
+./feed.c:226: ERROR:SPACING: space required before the open brace '{'
+./feed.c:238: WARNING:BRACES: braces {} are not necessary for single statement blocks
+./feed.c:242: WARNING:BRACES: braces {} are not necessary for single statement blocks
+./feed.c:246: WARNING:MISSING_EOF_NEWLINE: adding a line without newline at end of file
 ./graph.c:8: ERROR:TRAILING_WHITESPACE: trailing whitespace
 ./graph.c:71: CHECK:COMPARISON_TO_NULL: Comparison to NULL could be written "!graph_get_node"
 ./graph.c:76: WARNING:UNNECESSARY_ELSE: else is not generally useful after a break or return
