@@ -127,7 +127,7 @@ static void _clique(app_wrapper_t *app)
 }
 
 static void _friends_repost_rec(graph_node_t *gnode, app_wrapper_t *app,
-								size_t uid)
+								size_t uid, map_t *friends)
 {
 	linked_list_t *children = gnode->out_links;
 	list_node_t *current = children->head;
@@ -138,11 +138,15 @@ static void _friends_repost_rec(graph_node_t *gnode, app_wrapper_t *app,
 	user_t *user = STRUCT_FROM_MEMBER(user_t, user_gnode, gnode);
 	if (graph_has_link_by_id(app->users, uid, post->user_id))
 		if (post->post_level != 0)
-			printf("%s\n", user->username);
+			if (!map_has_key(friends, &post->user_id)) {
+				printf("%s\n", user->username);
+				char reposted = 69;
+				map_add(friends, &post->user_id, &reposted);
+			}
 
 	while (current) {
 		graph_link_t *child = STRUCT_FROM_MEMBER(graph_link_t, current, node);
-		_friends_repost_rec(child->link, app, uid);
+		_friends_repost_rec(child->link, app, uid, friends);
 		current = current->next;
 	}
 }
@@ -155,8 +159,13 @@ static void _friends_repost(app_wrapper_t *app)
 	size_t id = strtosizet(post_id);
 	size_t graph_post_id = app_get_post_graph_id(app, id);
 
+	map_t *friends = map_create(USERS_BUCKETS, sizeof(size_t), sizeof(char),
+								simple_entry_destroy, hash_size_t, sizetcmp);
+
 	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
-	_friends_repost_rec(gnode, app, uid);
+	_friends_repost_rec(gnode, app, uid, friends);
+
+	map_destroy(friends);
 }
 
 static void _view_profile(app_wrapper_t *app)

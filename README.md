@@ -11,8 +11,10 @@ as the one I (Andrei) implemented for Tema 2. The documentation is also the same
 - [Task 3](#task3)
 - [Graphs](#graph)
 - [Graph Example](#graph-example)
+- [Sets](#set)
 - [Hashmaps](#hmap)
 - [Linked Lists](#llist)
+
 
 # Social Media: Tema 3
 
@@ -111,7 +113,38 @@ as the one I (Andrei) implemented for Tema 2. The documentation is also the same
 
 3. ## Task 3: Social Media <a name="task3"></a>
 	
-	**WORK IN PROGRESS**
+	1. ## Overview
+		
+		Luckily, this task did not require 'too much' infrastracture to set up (it only needed some set functions).
+		The only special thing about this task is that it can recieve commands from the previous 2 tasks.
+
+	2. ## Feed
+
+		Having a good graph implementation comes a long way. Whenever a new post / repost is created, it is placed at the
+		end of the `nodes` list in the app wrapper's `posts` graph. To get the latest posts / reposts from a user's friend group,
+		just traverse the list of nodes from `tail` to `head`, and display only posts / reposts from the user's friends.
+
+	3. ## View Profile
+
+		Viewing the profile is just as simple as Feed: just traverse the list of posts, from `head` to `tail`, this time, and display
+		only the posts made by the user. After that, traverse it again to display all the reposts made by the user. It's as simpe as that.
+
+	4. ## Friends that Reposted
+
+		Finding all the friends that reposted is also pretty simple. Remeber the way to get all reposts of a post? With a `DFS traversal`.
+		Now traverse the graph formed by the post and its reposts using `DFS` and every time you find a repost done by a friend of the user,
+		display the friend's name. Just make sure that you don't display a friend multiple times (that's why I used a hashmap to keep track
+		of what friend has already been printed).
+
+	5. ## Common Group
+
+		Finding the biggest clique of a graph is another different story. My feeble game-dev brain is to small to understand
+		why Bron's algorithm works. The fact that a succeded in implementing it is a 1 AM miracle (literally).
+		It is supposed to find the biggest set of verteces that all have connections to one another by calling itself
+		recursevly. The recursion ends when it verified every vertex or it can't include or exclude any more verteces in the
+		clique. Actual black magic. I used the provided wiki
+		<a href="https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm#Without_pivoting" target="_blank">
+		link</a>. It was very usefull. Thank you!
 
 4. ## Linked List Implementation <a name="llist"></a>
 
@@ -142,6 +175,12 @@ as the one I (Andrei) implemented for Tema 2. The documentation is also the same
 	```C
 	struct data_struct_t *data = STRUCT_FROM_MEMBER(data_struct_t, node_ptr, node);
 	```
+	And when I thought that things were getting better, the old style checker came back to ruin everything. As always
+	it has a little
+    <a href = "https://cdn.discordapp.com/attachments/1087366715614179338/1236297841761194007/image.png?ex=66377f96&is=66362e16&hm=7cf45e39b429b356bcd5df93ced9b144af60ab455c8f378cee547a3b8f916c4d&" target="_blank">
+    problem
+    </a>
+    with these macros. :( 
 
 5. ## Hashmap Implementations <a name="hmap"></a>
 
@@ -170,6 +209,38 @@ as the one I (Andrei) implemented for Tema 2. The documentation is also the same
 	any dynamic allocated pointers).<br>
 	Maybe, one day, I will implement some sort of dynamic hashmap, that doesn't have the BUCKET values
 	hard-coded as macros. ;)
+
+5. ## Set Implementation <a name="set"></a>
+	
+	To properly implement Born Kerbosch's algorithm, I needed a good set (unique lists) implementation.
+	The `set_t` is just a linked list of `set_element_t`. It is also pretty similar to the hashmap,
+	as the data is part of the set element (the same way the data is part of the `map_entry_t`).
+	```C
+	struct set_element_t {
+	    void *data;
+	    list_node_t node;
+	};
+
+	struct set_t {
+	    struct linked_list_t *list;
+	    size_t data_size;
+	    int (*datacmp)(void *data1, void *data2);
+	};
+	```
+	To create a set, you need to provide a way to destroy a set element and a way to compare the data
+	(along with the size of the data). For all basic needs, I have already created the
+	`simple_set_destructor()` function. By simple, I mean the same type of simple that regards the `map_entry_t`.<br>
+	This implementation also comes with some basic set operations already done:
+	```C
+	set_add() // -> Add an element to the set
+	set_remove() // -> Remove an element from the set
+	set_contains() // -> Verify if the set contains an element
+
+	set_union() // -> Create and return a new set that is the reunion of 2 sets
+	set_intersect() // -> Create and return a new set that is the intersection of 2 sets
+	```
+	The last 2 functions: `set_union()` and `set_intersect()` DO NOT free the 2 sets after applying the operation.<br>
+	I agree that a `set_diff()` function is missing from the implementation, but I did not need one, so I did not make one.
 
 6. ## Graph Implementation <a name="graph"></a>
 
@@ -315,3 +386,33 @@ as the one I (Andrei) implemented for Tema 2. The documentation is also the same
 	// Free the graph when you don't need it anymore.
 	graph_destroy(my_graph);
 	```
+
+9. ## How do I get all the nodes that have a connection with another node? <a name="graph-example2"></a>
+	Let's say that you want to find all graph nodes that have a link with another graph node.
+	You should do something like this:
+	```C
+	graph_node *given_node; // This is the given graph node whose connections we want to find.
+
+	// Let's find all nodes who have a link that starts in the given nodes and end in themselves:
+	// given_node----->other_node
+	list_node_t *current = given_node->out_links->head; // We search the 'out links'
+	while (current != NULL) {
+		// Get the graph link from the list node.
+		graph_link_t *link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
+		graph_node_t *other_node = link->link; // The graph link has a pointer to the node it links.
+		// Get your data from the graph node
+		some_data_t *data = STRUCT_FROM_MEMBER(some_data_t, other_node, gnode);
+		do_something(data);
+		current = current->next;
+	}
+	```
+	Yep, this is all you need to do to get the data from connected nodes.<br>
+	If you need to get the data from all the nodes that start a connection with the given node,
+	just change `out_links` for `in_links` (as in links that end **in** the given node).<br>
+	You can also make trees if you set every connection as uni-directional:
+	Only link `parents` to `children`:
+	```C
+	graph_link_nodes(tree, parent, child);
+	```
+	You can also use the function `graph_get_first_inlink()` to swiftly get the parent of a node in a tree.<br>
+	Other type of trees (such as BST) may require `forking` the implementation (the same way that a set is a fork of a linked list).

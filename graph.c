@@ -5,7 +5,7 @@ static void old_id_destroy(list_node_t *node)
 {
 	old_id_t *old_id;
 	old_id = STRUCT_FROM_MEMBER(old_id_t, node, node);
-	free(old_id);	
+	free(old_id);
 }
 
 graph_t *graph_create(void (*graph_node_des)(list_node_t *))
@@ -68,34 +68,36 @@ size_t graph_add_node(graph_t *graph, graph_node_t *gnode)
 	// it's more intuitive if it takes the first available id.
 	// Buuut, it's not like the list is sorted anyway, so yeah.
 	// I'm just going to leave this as is.
-	if (graph_get_node(graph, graph->nodes->size) == NULL) {
+	if (!graph_get_node(graph, graph->nodes->size)) {
 		gnode->id = graph->nodes->size;
 		list_push(graph->nodes, &gnode->node);
 		map_add(graph->highway, &gnode->id, &gnode);
 		return gnode->id;
-	} else {
-		old_id_t *old_id;
-		old_id = STRUCT_FROM_MEMBER(old_id_t, graph->old_ids->head, node);
-		gnode->id = old_id->id;
-		list_push(graph->nodes, &gnode->node);
-		map_add(graph->highway, &gnode->id, &gnode);
-		old_id->id = old_id->id + 1;
-		if (graph_get_node(graph, old_id->id) != NULL) {
-			list_purge(graph->old_ids, 0);
-		}
-		return gnode->id;
 	}
+
+	old_id_t *old_id;
+	old_id = STRUCT_FROM_MEMBER(old_id_t, graph->old_ids->head, node);
+	gnode->id = old_id->id;
+	list_push(graph->nodes, &gnode->node);
+	map_add(graph->highway, &gnode->id, &gnode);
+	old_id->id = old_id->id + 1;
+	if (graph_get_node(graph, old_id->id))
+		list_purge(graph->old_ids, 0);
+
+	return gnode->id;
 }
 
-char graph_has_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2) {
+char graph_has_link_nodes(graph_t *graph, graph_node_t *gnode1,
+						  graph_node_t *gnode2)
+{
 	graph = graph;
 	list_node_t *current = gnode1->out_links->head;
-	while (current != NULL) {
+	while (current) {
 		graph_link_t *link;
 		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
-		if (link->link == gnode2) {
+		if (link->link == gnode2)
 			return 1;
-		}
+
 		current = current->next;
 	}
 	return 0;
@@ -108,13 +110,14 @@ char graph_has_link_by_id(graph_t *graph, size_t id1, size_t id2) {
 	return graph_has_link_nodes(graph, gnode1, gnode2);
 }
 
-void graph_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2)
+void graph_link_nodes(graph_t *graph, graph_node_t *gnode1,
+					  graph_node_t *gnode2)
 {
 	// Seems like 'graph' is unused, but it may be in the future
 	graph = graph;
-	if (gnode1 == NULL || gnode2 == NULL) {
+	if (!gnode1 || !gnode2)
 		return;
-	}
+
 	// Check if the link already exists
 	if (graph_has_link_nodes(graph, gnode1, gnode2))
 		return;
@@ -129,15 +132,17 @@ void graph_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2
 void graph_link_by_id(graph_t *graph, size_t id1, size_t id2)
 {
 	// It can be better
-	if (map_get_entry(graph->highway, &id1) == NULL) {
+	if (!map_get_entry(graph->highway, &id1))
 		return;
-	}
-	if (map_get_entry(graph->highway, &id2) == NULL) {
-		return;
-	}
 
-	graph_node_t *gnode1 = *(graph_node_t **)map_get_value(graph->highway, &id1);
-	graph_node_t *gnode2 = *(graph_node_t **)map_get_value(graph->highway, &id2);
+	if (!map_get_entry(graph->highway, &id2))
+		return;
+
+	graph_node_t *gnode1;
+	graph_node_t *gnode2;
+
+	gnode1 = *(graph_node_t **)map_get_value(graph->highway, &id1);
+	gnode2 = *(graph_node_t **)map_get_value(graph->highway, &id2);
 
 	graph_link_nodes(graph, gnode1, gnode2);
 }
@@ -148,23 +153,24 @@ void graph_blink_by_id(graph_t *graph, size_t id1, size_t id2)
 	graph_link_by_id(graph, id2, id1);
 }
 
-void graph_blink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2)
+void graph_blink_nodes(graph_t *graph, graph_node_t *gnode1,
+					   graph_node_t *gnode2)
 {
 	graph_link_nodes(graph, gnode1, gnode2);
 	graph_link_nodes(graph, gnode2, gnode1);
 }
 
-void graph_unlink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2)
+void graph_unlink_nodes(graph_t *graph, graph_node_t *gnode1,
+						graph_node_t *gnode2)
 {
 	// Seems like 'graph' is unused, but it may be in the future
 	graph = graph;
-	if (gnode1 == NULL || gnode2 == NULL) {
+	if (!gnode1 || !gnode2)
 		return;
-	}
-	list_node_t *current;
 
+	list_node_t *current;
 	current = gnode1->out_links->head;
-	while (current != NULL) {
+	while (current) {
 		graph_link_t *link;
 		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
 		if (link->link == gnode2) {
@@ -175,7 +181,7 @@ void graph_unlink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnod
 	}
 
 	current = gnode2->in_links->head;
-	while (current != NULL) {
+	while (current) {
 		graph_link_t *link;
 		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
 		if (link->link == gnode1) {
@@ -188,20 +194,23 @@ void graph_unlink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnod
 
 void graph_unlink_by_id(graph_t *graph, size_t id1, size_t id2)
 {
-	if (map_get_entry(graph->highway, &id1) == NULL) {
+	if (!map_get_entry(graph->highway, &id1))
 		return;
-	}
-	if (map_get_entry(graph->highway, &id2) == NULL) {
-		return;
-	}
 
-	graph_node_t *gnode1 = *(graph_node_t **)map_get_value(graph->highway, &id1);
-	graph_node_t *gnode2 = *(graph_node_t **)map_get_value(graph->highway, &id2);
+	if (!map_get_entry(graph->highway, &id2))
+		return;
+
+	graph_node_t *gnode1;
+	graph_node_t *gnode2;
+
+	gnode1 = *(graph_node_t **)map_get_value(graph->highway, &id1);
+	gnode2 = *(graph_node_t **)map_get_value(graph->highway, &id2);
 
 	graph_unlink_nodes(graph, gnode1, gnode2);
 }
 
-void graph_unblink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2)
+void graph_unblink_nodes(graph_t *graph, graph_node_t *gnode1,
+						 graph_node_t *gnode2)
 {
 	graph_unlink_nodes(graph, gnode1, gnode2);
 	graph_unlink_nodes(graph, gnode2, gnode2);
@@ -219,13 +228,13 @@ void graph_remove_node(graph_t *graph, graph_node_t *gnode)
 	list_node_t *current;
 	list_node_t *current2;
 	current = gnode->in_links->head;
-	while (current != NULL) {
+	while (current) {
 		graph_link_t *link;
 		link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
 		graph_node_t *linked_node = link->link;
 		// Search for the link to gnode
 		current2 = linked_node->out_links->head;
-		while (current2 != NULL) {
+		while (current2) {
 			graph_link_t *out_link;
 			out_link = STRUCT_FROM_MEMBER(graph_link_t, current2, node);
 			if (out_link->link == gnode) {
@@ -253,7 +262,7 @@ void graph_remove_node(graph_t *graph, graph_node_t *gnode)
 			list_push(graph->old_ids, &old_id->node);
 		} else {
 			size_t prev_id = id - 1;
-			if (graph_get_node(graph, prev_id) != NULL) {
+			if (graph_get_node(graph, prev_id)) {
 				old_id = malloc(sizeof(*old_id));
 				DIE(!old_id, "Malloc failed!\n");
 				old_id->id = id;
@@ -264,21 +273,21 @@ void graph_remove_node(graph_t *graph, graph_node_t *gnode)
 		list_purge_node(graph->nodes, &gnode->node);
 	}
 	current = graph->old_ids->head;
-	while (current != NULL) {
+	while (current) {
 		current2 = current->next;
 		old_id_t *old_id = STRUCT_FROM_MEMBER(old_id_t, current, node);
-		if (old_id->id >= graph->nodes->size) {
+		if (old_id->id >= graph->nodes->size)
 			list_purge_node(graph->old_ids, &old_id->node);
-		}
+
 		current = current2;
 	}
 }
 
 void graph_remove_node_by_id(graph_t *graph, size_t id)
 {
-	if (map_get_entry(graph->highway, &id) == NULL) {
+	if (!map_get_entry(graph->highway, &id))
 		return;
-	}
+
 	graph_node_t *gnode;
 	gnode = *(graph_node_t **)map_get_value(graph->highway, &id);
 	graph_remove_node(graph, gnode);
@@ -288,16 +297,16 @@ graph_node_t *graph_get_node(graph_t *graph, size_t id)
 {
 	graph_node_t **node;
 	node = (graph_node_t **)map_get_value(graph->highway, &id);
-	return (node == NULL) ? NULL : *node;
+	return (node == 0x0) ? NULL : *node;
 }
 
 graph_node_t *graph_node_get_first_inlink(graph_node_t *gnode)
 {
 	list_node_t *node;
 	node = gnode->in_links->head;
-	if (node == NULL) {
+	if (!node)
 		return NULL;
-	}
+
 	graph_link_t *link = STRUCT_FROM_MEMBER(graph_link_t, node, node);
 	return link->link;
 }
@@ -305,15 +314,16 @@ graph_node_t *graph_node_get_first_inlink(graph_node_t *gnode)
 void graph_print_ids(graph_t *graph)
 {
 	list_node_t *current = graph->nodes->head;
-	while (current != NULL) {
+	while (current) {
 		graph_node_t *gnode;
 		gnode = STRUCT_FROM_MEMBER(graph_node_t, current, node);
 		printf("%lu: ", gnode->id);
-		
+
 		list_node_t *current2;
 		current2 = gnode->out_links->head;
-		while (current2 != NULL) {
-			graph_link_t *link = STRUCT_FROM_MEMBER(graph_link_t, current2, node);
+		while (current2) {
+			graph_link_t *link;
+			link = STRUCT_FROM_MEMBER(graph_link_t, current2, node);
 			printf("%lu, ", link->link->id);
 			current2 = current2->next;
 		}

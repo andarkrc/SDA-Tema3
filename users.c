@@ -33,9 +33,8 @@ void init_users(void)
 }
 
 void free_users(void) {
-	for (uint16_t i = 0; i < users_number; i++) {
+	for (uint16_t i = 0; i < users_number; i++)
 		free(users[i]);
-	}
 	free(users);
 }
 
