@@ -415,4 +415,4 @@ as the one I (Andrei) implemented for Tema 2. The documentation is also the same
 	graph_link_nodes(tree, parent, child);
 	```
 	You can also use the function `graph_get_first_inlink()` to swiftly get the parent of a node in a tree.<br>
-	Other type of trees (such as BST) may require `forking` the implementation (the same way that a set is a fork of a linked list).
+	Other types of trees (such as BST) may require `forking` the implementation (the same way that a set is a fork of a linked list).
