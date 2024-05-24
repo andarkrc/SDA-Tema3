@@ -11,7 +11,7 @@ typedef struct set_element_t {
 typedef struct set_t {
 	linked_list_t *list;
 	size_t data_size;
-	int (*datacmp)(void *, void *);
+	int (*datacmp)(void *data1, void *data2);
 } set_t;
 
 /**
@@ -33,7 +33,7 @@ void simple_set_destructor(list_node_t *node);
 
 /**
  * set_destroy() - Function that destroys a set(frees the memory).
- * @param set: Pointer to the set to be destroyed.  
+ * @param set: Pointer to the set to be destroyed.
  */
 void set_destroy(set_t *set);
 
@@ -43,7 +43,7 @@ void set_destroy(set_t *set);
  * @param data: The data to be searched.
  *
  * @return - 1 if the set contains the data,
- * 			 0 otherwise.
+ *			 0 otherwise.
  */
 char set_contains(set_t *set, void *data);
 
@@ -84,7 +84,7 @@ set_t *set_union(set_t *set1, set_t *set2);
  * @param set
  *
  * @return - 1 if the set is empty,
- * 			 0 otherwise.
+ *			 0 otherwise.
  */
 char set_empty(set_t *set);
 #endif

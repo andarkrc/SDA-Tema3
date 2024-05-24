@@ -13,7 +13,7 @@ typedef struct linked_list_t {
 	list_node_t *head;
 	list_node_t *tail;
 	size_t size;
-	void (*destructor)(list_node_t *);
+	void (*destructor)(list_node_t *node);
 } linked_list_t;
 
 // Some of the functions can be macros.
@@ -23,8 +23,8 @@ typedef struct linked_list_t {
 /**
  * list_create() - Creates a new linked list.
  * @param destructor: Function that destroys a node of the list.
- * 						(frees the memory)
- * 
+ *					  (frees the memory)
+ *
  * @return - Pointer to the list.
  */
 linked_list_t *list_create(void (*destructor)(list_node_t *));
@@ -82,7 +82,7 @@ void list_add_before(linked_list_t *list, list_node_t *next, list_node_t *node);
  * list_remove() - Removes the node from the list from the specified index.
  * @param list
  * @param index
- * 
+ *
  * @return - Pointer to the removed node.
  */
 list_node_t *list_remove(linked_list_t *list, size_t index);
@@ -91,7 +91,7 @@ list_node_t *list_remove(linked_list_t *list, size_t index);
  * list_remove_node() - Removes the specified node from the list.
  * @param list
  * @param node: Pointer to the node.
- * 
+ *
  * @return - Pointer to the removed node.
  */
 list_node_t *list_remove_node(linked_list_t *list, list_node_t *node);
@@ -112,6 +112,7 @@ void list_purge_node(linked_list_t *list, list_node_t *node);
 
 /**
  * list_purge_all() - list_remove_all()
+ * @param list
  */
 void list_purge_all(linked_list_t *list);
 
@@ -119,17 +120,17 @@ void list_purge_all(linked_list_t *list);
  * list_get_node() - Returns the node at a specified index in the list.
  * @param list
  * @param index
- * 
+ *
  * @return - Pointer to the node.
  */
 list_node_t *list_get_node(linked_list_t *list, size_t index);
 
 /**
  * list_get_node_index() - Returns the index at where a specified node exists
- * 							in the list
+ *						   in the list
  * @param list
  * @param node - Pointer to the node.
- * 
+ *
  * @return - Index of the node.
  */
 size_t list_get_node_index(linked_list_t *list, list_node_t *node);
@@ -137,11 +138,10 @@ size_t list_get_node_index(linked_list_t *list, list_node_t *node);
 /**
  * list_empty() - Verifies if the list is empty
  * @param list
- * 
+ *
  * @return - 1 if the list is empty (size is 0)
- * 			 0 if the list is not empty
+ *			 0 if the list is not empty
  */
 char list_empty(linked_list_t *list);
-
 
 #endif

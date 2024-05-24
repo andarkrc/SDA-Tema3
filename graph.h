@@ -17,7 +17,7 @@ typedef struct graph_node_t {
 	list_node_t node;
 } graph_node_t;
 
-typedef struct graph_link_t{
+typedef struct graph_link_t {
 	graph_node_t *link;
 	list_node_t node;
 } graph_link_t;
@@ -32,9 +32,9 @@ typedef struct graph_t {
 
 /**
  * graph_create() - Creates a new graph.
- * @param graph_node_des: Destructor function that should destroy the 
- * 						  whole structure in which a graph node resides. 
- * 
+ * @param graph_node_des: Destructor function that should destroy the
+ *						  whole structure in which a graph node resides.
+ *
  * @return - Pointer to the new graph.
  */
 graph_t *graph_create(void (*graph_node_des)(list_node_t *));
@@ -47,14 +47,14 @@ void graph_destroy(graph_t *graph);
 
 /**
  * graph_node_create() - Creates (initializes) a new 'Graph Node'.
- * 
+ *
  * @return - The newly created node (the entire struct, NOT A POINTER).
  */
 graph_node_t graph_node_create(void);
 
 /**
  * graph_node_destroy() - Destroys (frees the allocated memory for) agraph node.
- * @param gnode: 'Graph Node' to be destroyed(the entire struct, NOT A POINTER). 
+ * @param gnode: 'Graph Node' to be destroyed(the entire struct, NOT A POINTER).
  */
 void graph_node_destroy(graph_node_t gnode);
 
@@ -62,7 +62,7 @@ void graph_node_destroy(graph_node_t gnode);
  * graph_add_node() - Adds a previously created 'Graph Node' to the graph.
  * @param graph: Pointer to the graph where the node will be added to.
  * @param gnode: POINTER to the node to be added.
- * 
+ *
  * @return - ID of the node in the graph.
  */
 size_t graph_add_node(graph_t *graph, graph_node_t *gnode);
@@ -73,7 +73,8 @@ size_t graph_add_node(graph_t *graph, graph_node_t *gnode);
  * @param gnode1: POINTER to the 'source' node: source--->destination.
  * @param gnode2: POINTER to the 'destination' node.
  */
-void graph_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2);
+void graph_link_nodes(graph_t *graph, graph_node_t *gnode1,
+					  graph_node_t *gnode2);
 
 /**
  * graph_link_by_id() - Add a link from node with id1 to node with id2.
@@ -89,7 +90,8 @@ void graph_link_by_id(graph_t *graph, size_t id1, size_t id2);
  * @param gnode1: POINTER to the first graph node.
  * @param gnode2: POINTER to the second graph node.
  */
-void graph_blink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2);
+void graph_blink_nodes(graph_t *graph, graph_node_t *gnode1,
+					   graph_node_t *gnode2);
 
 /**
  * graph_blink_by_id() - Same as graph_link_by_id() but the link is both ways.
@@ -105,7 +107,8 @@ void graph_blink_by_id(graph_t *graph, size_t id1, size_t id2);
  * @param gnode1: POINTER to the 'source' node.
  * @param gnode2: POINTER to the 'destination' node.
  */
-void graph_unlink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2);
+void graph_unlink_nodes(graph_t *graph, graph_node_t *gnode1,
+						graph_node_t *gnode2);
 
 /**
  * graph_unlink_by_id() - Remove the link from node with id1 to node with id2.
@@ -117,16 +120,17 @@ void graph_unlink_by_id(graph_t *graph, size_t id1, size_t id2);
 
 /**
  * graph_unblink_nodes() - Same as graph_unlink_nodes() but both links
- * 						   are removed.
+ *						   are removed.
  * @param graph: Pointer to the graph.
  * @param gnode1: POINTER to the first graph node.
  * @param gnode2: POINTER to the second graph node.
  */
-void graph_unblink_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2);
+void graph_unblink_nodes(graph_t *graph, graph_node_t *gnode1,
+						 graph_node_t *gnode2);
 
 /**
  * graph_unblink_by_id() - Same as graph_unlink_by_id() but both link
- * 						   are removed.
+ *						   are removed.
  * @param graph: Pointer to the graph.
  * @param id1: ID of the first graph node.
  * @param id2: ID of the second graph node.
@@ -142,7 +146,7 @@ void graph_remove_node(graph_t *graph, graph_node_t *gnode);
 
 /**
  * graph_remove_node_by_id() - Completely remove the node with the specified
- * 							   ID from a graph.
+ *							   ID from a graph.
  * @param graph: Pointer to the graph.
  * @param id: ID of the graph node to be removed.
  */
@@ -152,16 +156,17 @@ void graph_remove_node_by_id(graph_t *graph, size_t id);
  * graph_get_node() - Find the graph node with the specified ID in a graph.
  * @param graph: Pointer to the graph.
  * @param id: ID of the graph node to be found.
- * 
- * @return - NULL if there is no node with the specifed ID in the graph.
- * 			 POINTER to the desired node if it exists in the graph.
+ *
+ * @return - NULL if there is no node with the specified ID in the graph.
+ *			 POINTER to the desired node if it exists in the graph.
  */
 graph_node_t *graph_get_node(graph_t *graph, size_t id);
 
 /**
- * graph_node_get_first_inlink() - Use mainly for trees. 
- * 								   It gets the gnode's parent.
+ * graph_node_get_first_inlink() - Use mainly for trees.
+ *								   It gets the gnode's parent.
  * @param gnode
+ *
  * @return - First gnode that links to the provided node.
  */
 graph_node_t *graph_node_get_first_inlink(graph_node_t *gnode);
@@ -174,20 +179,27 @@ void graph_print_ids(graph_t *graph);
 
 /**
  * graph_has_link_by_id() - Find out if there is a link between
- * 							two given (via id) nodes.
+ *							two given (via id) nodes.
  * @param graph: Pointer to the graph of nodes.
  * @param id1: The ID of the first node.
  * @param id2: The ID of the second node.
+ *
+ * @return - 1 if there is a link from node with id1 to node with id2.
+ *			 0 otherwise
 */
 char graph_has_link_by_id(graph_t *graph, size_t id1, size_t id2);
 
 /**
  * graph_has_link_nodes() - Find out if there is a link between
- * 							two given nodes.
+ *							two given nodes.
  * @param graph: Pointer to the graph of nodes.
  * @param gnode1: Pointer to the first node.
  * @param gnode2: Pointer to the second node.
+ *
+ * @return - 1 if there is a link from gnode1 to gnode2.
+ *			 0 otherwise
 */
-char graph_has_link_nodes(graph_t *graph, graph_node_t *gnode1, graph_node_t *gnode2);
+char graph_has_link_nodes(graph_t *graph, graph_node_t *gnode1,
+						  graph_node_t *gnode2);
 
 #endif

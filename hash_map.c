@@ -11,12 +11,12 @@ map_t *map_create(size_t max_buckets, size_t key_size, size_t value_size,
 	map->keycmp = keycmp;
 	map->key_size = key_size;
 	map->value_size = value_size;
-	size_t buckets_size = max_buckets * sizeof(*(map->buckets));
+	size_t buckets_size = max_buckets * sizeof(*map->buckets);
 	map->buckets = malloc(buckets_size);
 	DIE(!map->buckets, "Malloc failed\n");
-	for (size_t i = 0; i < max_buckets; i++) {
+	for (size_t i = 0; i < max_buckets; i++)
 		map->buckets[i] = list_create(destructor);
-	}
+
 	return map;
 }
 
@@ -51,7 +51,7 @@ int strkeycmp(void *key1, void *key2)
 void map_add(map_t *map, void *key, void *value)
 {
 	map_entry_t *entry = map_get_entry(map, key);
-	if (entry != NULL) {
+	if (entry) {
 		memcpy(entry->value, value, map->value_size);
 		return;
 	}
@@ -76,9 +76,8 @@ void map_add(map_t *map, void *key, void *value)
 void map_remove(map_t *map, void *key)
 {
 	map_entry_t *entry = map_get_entry(map, key);
-	if (entry == NULL) {
+	if (!entry)
 		return;
-	}
 
 	uint bucket = map->hash(key) % map->max_buckets;
 	linked_list_t *list = map->buckets[bucket];
@@ -93,9 +92,9 @@ map_entry_t *map_get_entry(map_t *map, void *key)
 	while (current) {
 		map_entry_t *entry = STRUCT_FROM_MEMBER(map_entry_t, current, node);
 		// Stop when you find the correct entry.
-		if (map->keycmp(entry->key, key) == 0) {
+		if (map->keycmp(entry->key, key) == 0)
 			return entry;
-		}
+
 		current = current->next;
 	}
 	return NULL;
@@ -103,11 +102,13 @@ map_entry_t *map_get_entry(map_t *map, void *key)
 
 char map_has_key(map_t *map, void *key)
 {
-	return (map_get_entry(map, key) != NULL);
+	// IT WON'T LET ME COMPARE TO NULL.
+	// I'M RETURNING A STATEMENT NOT USING IT IN A IF.
+	return (map_get_entry(map, key) != 0x0);
 }
 
 void *map_get_value(map_t *map, void *key)
 {
 	map_entry_t *entry = map_get_entry(map, key);
-	return (entry != NULL) ? entry->value : NULL;
+	return (entry != 0x0) ? entry->value : NULL;
 }

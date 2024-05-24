@@ -16,8 +16,8 @@ typedef struct map_t {
 	size_t key_size;
 	size_t value_size;
 
-	int (*keycmp)(void *, void *);
-	uint (*hash)(void *);
+	int (*keycmp)(void *key1, void *key2);
+	uint (*hash)(void *key);
 } map_t;
 
 /**
@@ -28,7 +28,7 @@ typedef struct map_t {
  * @param destructor: Function that destroys a map entry.
  * @param hash: Function that hashes a key.
  * @param keycmp: Function that compares 2 keys.
- * 
+ *
  * @return - Pointer to the new map.
  */
 map_t *map_create(size_t max_buckets, size_t key_size, size_t value_size,
@@ -37,7 +37,7 @@ map_t *map_create(size_t max_buckets, size_t key_size, size_t value_size,
 
 /**
  * simple_entry_destroy() - Destroy a simple hash map entry.
- * 							(simple data types & arrays)
+ *							(simple data types & arrays)
  * @param node: Node of the bucket list.
  */
 void simple_entry_destroy(list_node_t *node);
@@ -46,7 +46,7 @@ void simple_entry_destroy(list_node_t *node);
  * strkeycmp() - strcmp() : Used to compare 2 string keys in a map.
  * @param key1
  * @param key2
- * 
+ *
  * @return - See return of strcmp()
  */
 int strkeycmp(void *key1, void *key2);
@@ -82,9 +82,9 @@ void map_remove(map_t *map, void *key);
  * map_has_key() - Checks the existence of an entry at the specified key.
  * @param map
  * @param key
- * 
+ *
  * @return - 1 if the map contains an entry for key.
- * 			 0 if the map does not contain an entry for key.
+ *			 0 if the map does not contain an entry for key.
  */
 char map_has_key(map_t *map, void *key);
 
@@ -92,14 +92,17 @@ char map_has_key(map_t *map, void *key);
  * map_get_value() - Gets only the value that exists in the map at key.
  * @param map
  * @param key
- * 
+ *
  * @return - The value at key.
  */
 void *map_get_value(map_t *map, void *key);
 
 /**
  * map_get_entry() - Gets the whole entry that exists in the map at key.
- * 						()
+ * @param map
+ * @param key
+ *
+ * @return - Pointer to the map entry.
  */
 map_entry_t *map_get_entry(map_t *map, void *key);
 
