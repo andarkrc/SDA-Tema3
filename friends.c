@@ -83,6 +83,7 @@ static void _user_distance(app_wrapper_t *app)
 
 	linked_list_t *q = list_create(next_usr_dest);
 	struct next_usr_t *first = malloc(sizeof(*first));
+	DIE(!first, "Malloc failed\n");
 	first->id = graph_id1;
 	list_push(q, &first->node);
 
@@ -105,6 +106,7 @@ static void _user_distance(app_wrapper_t *app)
 			link = STRUCT_FROM_MEMBER(graph_link_t, current, node);
 			if (!map_has_key(distance, &link->link->id)) {
 				struct next_usr_t *new = malloc(sizeof(*new));
+				DIE(!new, "Malloc failed\n");
 				new->id = link->link->id;
 				size_t new_dist;
 				new_dist = *(size_t *)map_get_value(distance, &gnode->id) + 1;
@@ -191,6 +193,7 @@ static void _common_friends(app_wrapper_t *app)
 	graph_node_t *user2 = graph_get_node(app->users, id2);
 
 	uint16_t *friend_ids = malloc(sizeof(*friend_ids) * MAX_PEOPLE);
+	DIE(!friend_ids, "Malloc failed\n");
 	int idx = 0;
 
 	list_node_t *temp_node = user1->out_links->head;

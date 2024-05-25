@@ -2,8 +2,21 @@
 - andrei.popa0810
 - marius.baican
 
+##### Grupa: 313CA
+
+##### Nume: Popa Andrei, Baican Marius
+
+<br>
+
 Because there was no need for change, the implementation of the linked list and hashmap are the same
-as the one I (Andrei) implemented for Tema 2. The documentation is also the same. I also am the main contributor to the README.
+as the one I (Andrei) implemented for Tema 2. The documentation is also the same. I also am the main contributor to the README.<br>
+
+<br>
+
+***Please do something about the points given by the coding style. The checker won't give them because we have 5 unfixable
+errors (the code won't even compile anymore if they are fixed).***
+
+<br>
 
 ## Fast Access
 - [Task 1](#task1)
@@ -26,21 +39,86 @@ as the one I (Andrei) implemented for Tema 2. The documentation is also the same
 	reused. The final struct looks like this:
 	```C
 	struct app_wrapper_t {
-		// Users
-		struct graph_t *users;
-		struct map_t *user_ids;
+	    // Users
+	    struct graph_t *users;
+	    struct map_t *user_ids;
 		
-		// Posts
-		struct graph_t *posts;
-		struct map_t *post_ids;
-		size_t post_id_counter;
-	}
+	    // Posts
+	    struct graph_t *posts;
+	    struct map_t *post_ids;
+	    size_t post_id_counter;
+	};
 	```
 	The implementation will be further explained separately.
 
 1. ## Task 1: Friends Network <a name="task1"></a>
 
-	**WORK IN PROGRESS**
+	1. ### Overview
+
+		A user should:
+
+		- Be created with an unique ID;
+		- Have a name.
+
+		As the user's ID is handled externally (both by the `user_ids` map, and the `users` array in 'users.c'),
+		the ID can be ommited from the user's struct. So, a user can be represented in memory like this:
+
+		```C
+		struct user_t {
+		    char *username;
+		    struct graph_node_t gnode;
+		};
+		```
+
+	2. ### Adding & Removing Friends
+
+		To add or remove a friend, you just need to add double link in the `users` graph. 
+		This can be done using the functions:
+		```C
+		// ... get both user's ID
+		graph_blink_node_by_id(app->users, uid1, uid2); // To add
+		graph_unblink_node_by_id(app->users, uid1, uid2); // To remove
+		```
+
+	3. ### Friends Suggestions
+
+		Printing friends suggestions for a given user is a straight forward task:
+
+		- For every friend of the user, go through all _their_ friends;
+		- For all those friends of friends, check if they are already friends with the given user;
+		- If they are not, just place them in a vector;
+		- In the end, sort the vector (by every user's ID) and print all the users in the vector (just make
+		sure you don't print the same person twice).
+
+
+	4. ### Distance Between Users
+
+		Finding the distance between users it's a little tricky. You need to do a BFS (breadth-first-search).
+		This is an algorithm who traverses a graph 'level' by 'level'. For every node you need to get all their links
+		and place them in a queue and set their distance as the node's distance + 1. Just make sure you don't visit the
+		same node twice (we used a hashmap). To start, select the first user, set it's distance to 0 and let the algorithm run. 
+		After that, just search for the second user (in the hashmap in our case) and, if it exists, you will also find its 
+		distance to the first user.
+
+
+	5. ### Common Friends
+
+		To get all the common friends of 2 users:
+
+		- Go through all the friends of the first person;
+		- Check if they are friends with the second person;
+		- If they are, place them in a vector;
+		- After the checking it's done, sort the vector and print all the users in it.
+
+	6. ### Most Popular Friend
+
+		Getting the number of friends a user has is a simple task:
+		`user->gnode.out_links->size` or `user->gnode.in_links->size` contains this information.<br>
+
+		To find the most popular friend of an user:
+
+		- Go through all the user's friends;
+		- Find the one who has the most number of friends.
 
 2. ## Task 2: Posts and Reposts <a name="task2"></a>
 
@@ -113,30 +191,30 @@ as the one I (Andrei) implemented for Tema 2. The documentation is also the same
 
 3. ## Task 3: Social Media <a name="task3"></a>
 	
-	1. ## Overview
+	1. ### Overview
 		
 		Luckily, this task did not require 'too much' infrastracture to set up (it only needed some set functions).
 		The only special thing about this task is that it can recieve commands from the previous 2 tasks.
 
-	2. ## Feed
+	2. ### Feed
 
 		Having a good graph implementation comes a long way. Whenever a new post / repost is created, it is placed at the
 		end of the `nodes` list in the app wrapper's `posts` graph. To get the latest posts / reposts from a user's friend group,
 		just traverse the list of nodes from `tail` to `head`, and display only posts / reposts from the user's friends.
 
-	3. ## View Profile
+	3. ### View Profile
 
 		Viewing the profile is just as simple as Feed: just traverse the list of posts, from `head` to `tail`, this time, and display
 		only the posts made by the user. After that, traverse it again to display all the reposts made by the user. It's as simpe as that.
 
-	4. ## Friends that Reposted
+	4. ### Friends that Reposted
 
 		Finding all the friends that reposted is also pretty simple. Remeber the way to get all reposts of a post? With a `DFS traversal`.
 		Now traverse the graph formed by the post and its reposts using `DFS` and every time you find a repost done by a friend of the user,
 		display the friend's name. Just make sure that you don't display a friend multiple times (that's why I used a hashmap to keep track
 		of what friend has already been printed).
 
-	5. ## Common Group
+	5. ### Common Group
 
 		Finding the biggest clique of a graph is another different story. My feeble game-dev brain is to small to understand
 		why Bron's algorithm works. The fact that a succeded in implementing it is a 1 AM miracle (literally).
@@ -416,3 +494,18 @@ as the one I (Andrei) implemented for Tema 2. The documentation is also the same
 	```
 	You can also use the function `graph_get_first_inlink()` to swiftly get the parent of a node in a tree.<br>
 	Other types of trees (such as BST) may require `forking` the implementation (the same way that a set is a fork of a linked list).
+
+## After thoughts
+
+After finishing this homework, we learned a lot about designing a very basic (and crude) user and posts system. 
+There is a long way before this project could be called a 'social media app', that much we can tell. Nevertheless, 
+it is a good starting point in understanding the procedures of managing a big, interconnected system. There were a lot of
+places where stuff that was working was left alone, even if there were better way to do them. If it works, don't fix it. 
+Having a 'real world' example of graph usage is really usefull method of understanding how to design a good graph implementation.
+I (Andrei), can say that I did a pretty good job with the graph, even if there are places where it's kind of squeaky.
+
+Pentru corectare mai usoara (in caz ca este proces automat):
+
+Echipa tema 3 SD:
+andrei.popa0810
+marius.baican

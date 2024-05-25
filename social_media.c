@@ -23,6 +23,7 @@ int main(void)
 	app_wrapper_t *app = app_create();
 
 	char *input = (char *)malloc(MAX_COMMAND_LEN);
+	DIE(!input, "Malloc failed\n");
 	while (1) {
 		char *got_input = fgets(input, MAX_COMMAND_LEN, stdin);
 

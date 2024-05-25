@@ -239,6 +239,7 @@ static void _delete_post(app_wrapper_t *app)
 	graph_node_t *gnode = graph_get_node(app->posts, graph_post_id);
 	post_t *post = STRUCT_FROM_MEMBER(post_t, gnode, gnode);
 	char *title = malloc(POST_TITLE_LENGTH);
+	DIE(!title, "Malloc failed\n");
 	strcpy(title, post->title);
 	_delete_post_rec(app->posts, gnode);
 	if (repost_id) {

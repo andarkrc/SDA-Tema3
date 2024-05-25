@@ -20,6 +20,7 @@ void init_users(void)
 	fscanf(users_db, "%hu", &users_number);
 
 	users = malloc(users_number * sizeof(char *));
+	DIE(!users, "Malloc failed\n");
 
 	char temp[32];
 	for (uint16_t i = 0; i < users_number; i++) {
@@ -27,6 +28,7 @@ void init_users(void)
 		int size = strlen(temp);
 
 		users[i] = malloc(size + 1);
+		DIE(!users[i], "Malloc failed\n");
 		strcpy(users[i], temp);
 	}
 	fclose(users_db);
