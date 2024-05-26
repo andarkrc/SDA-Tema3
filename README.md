@@ -9,7 +9,7 @@
 <br>
 
 Because there was no need for change, the implementation of the linked list and hashmap are the same
-as the one I (Andrei) implemented for Tema 2. The documentation is also the same. I also am the main contributor to the README.<br>
+as the ones I (Andrei) implemented for Tema 2. The documentation is also the same. I also am the main contributor to the README.<br>
 
 <br>
 
@@ -35,7 +35,7 @@ errors (the code won't even compile anymore if they are fixed).***
 
 	To implement the social media app, we decided to go with 2 graphs (1 for users and 1 for posts).
 	We also needed a way to integrate the ID system used by the checker with the ID system used by the graphs, so
-	we just used another 2 hashmaps. there was also a need for an ID counter for the posts, as their ID's shouldn't be
+	we just used 2 hashmaps. There was also a need for an ID counter for the posts, as their ID's shouldn't be
 	reused. The final struct looks like this:
 	```C
 	struct app_wrapper_t {
@@ -72,12 +72,12 @@ errors (the code won't even compile anymore if they are fixed).***
 
 	2. ### Adding & Removing Friends
 
-		To add or remove a friend, you just need to add double link in the `users` graph. 
+		To add or remove a friend, you just need to add a double link in the `users` graph. 
 		This can be done using the functions:
 		```C
-		// ... get both user's ID
-		graph_blink_node_by_id(app->users, uid1, uid2); // To add
-		graph_unblink_node_by_id(app->users, uid1, uid2); // To remove
+		// ... get both user's IDs
+		graph_blink_by_id(app->users, uid1, uid2); // To add
+		graph_unblink_by_id(app->users, uid1, uid2); // To remove
 		```
 
 	3. ### Friends Suggestions
@@ -96,7 +96,7 @@ errors (the code won't even compile anymore if they are fixed).***
 		Finding the distance between users it's a little tricky. You need to do a BFS (breadth-first-search).
 		This is an algorithm who traverses a graph 'level' by 'level'. For every node you need to get all their links
 		and place them in a queue and set their distance as the node's distance + 1. Just make sure you don't visit the
-		same node twice (we used a hashmap). To start, select the first user, set it's distance to 0 and let the algorithm run. 
+		same node twice (we used a hashmap). To start, select the first user, set its distance to 0 and let the algorithm run. 
 		After that, just search for the second user (in the hashmap in our case) and, if it exists, you will also find its 
 		distance to the first user.
 
@@ -108,7 +108,7 @@ errors (the code won't even compile anymore if they are fixed).***
 		- Go through all the friends of the first person;
 		- Check if they are friends with the second person;
 		- If they are, place them in a vector;
-		- After the checking it's done, sort the vector and print all the users in it.
+		- After the checking is done, sort the vector and print all the users in it.
 
 	6. ### Most Popular Friend
 
@@ -137,13 +137,13 @@ errors (the code won't even compile anymore if they are fixed).***
 		
 		```C
 		struct post_t {
-			size_t id;
-			size_t post_level;
-			char *title;
-			size_t user_id;
-			uint like_count;
-			struct map_t *likes;
-			struct graph_node_t gnode;
+		    size_t id;
+		    size_t post_level;
+		    char *title;
+		    size_t user_id;
+		    uint like_count; // Should be 'size_t' but I forgot to change
+		    struct map_t *likes;
+		    struct graph_node_t gnode;
 		};
 		```
 
@@ -155,7 +155,7 @@ errors (the code won't even compile anymore if they are fixed).***
 	1. ### Create and Repost
 		Whenever a post is created, it is added as a new node in the `app->posts` graph. Every time it gets
 		a repost, the repost is created as a new 'post', and a link is formed from the original post to the new one.
-		The new post will have as `post_level`, the original's `post_level` + 1.
+		The new post will have as `post_level`, the parent's `post_level` + 1.
 
 	2. ### Common Repost
 		To get the common repost of 2 reposts we need to:
@@ -163,7 +163,7 @@ errors (the code won't even compile anymore if they are fixed).***
 		- Look at both reposts' `post_level`.
 		- If they are not equal, we call these 'offseted posts', and we need to 'climb' the one who has
 		a bigger `post_level` until we get them to equal 'levels'.
-		- If they end up being the same post, it means that post is the 'common ancestor'.
+		- If they end up being the same post, that post is the 'common ancestor'.
 		- Once we get both posts at the same level, we 'climb' both of them, until they both have the same parent.
 		- That parent should be the 'common ancestor' of both reposts.
 
@@ -179,8 +179,8 @@ errors (the code won't even compile anymore if they are fixed).***
 		To delete a post, a DFS algorithm (depth first search) is done on the post. We continously go to the next 'child' of the post
 		until there are no more children left to check. After that, the algo' returns and deletes every post / repost. <br>
 
-		To get the reposts of a post, we apply the same DFS algo', but instead of deleting the post it is displayed. Also, the function
-		is called before the algorithm moves on to the next child.
+		To get the reposts of a post, we apply the same DFS algo', but instead of deleting the post it is displayed. Also, the printing
+		is done before the algorithm moves on to the next child.
 
 	5. ### Ratio
 
@@ -216,8 +216,8 @@ errors (the code won't even compile anymore if they are fixed).***
 
 	5. ### Common Group
 
-		Finding the biggest clique of a graph is another different story. My feeble game-dev brain is to small to understand
-		why Bron's algorithm works. The fact that a succeded in implementing it is a 1 AM miracle (literally).
+		Finding the biggest clique of a graph is a completely different story. My feeble game-dev brain is to small to understand
+		why Bron's algorithm works. The fact that I succeded in implementing it is a 1 AM miracle (literally).
 		It is supposed to find the biggest set of verteces that all have connections to one another by calling itself
 		recursevly. The recursion ends when it verified every vertex or it can't include or exclude any more verteces in the
 		clique. Actual black magic. I used the provided wiki
@@ -226,7 +226,7 @@ errors (the code won't even compile anymore if they are fixed).***
 
 4. ## Linked List Implementation <a name="llist"></a>
 
-	The linked list I implement is similar to the one used in the Linux Kernel: the list's nodes are
+	The linked list I implemented is similar to the one used in the Linux Kernel: the list's nodes are
 	part of the data, not the other way around:<br>
 	```C
 	struct list_node_t {
@@ -251,7 +251,7 @@ errors (the code won't even compile anymore if they are fixed).***
 	This macro will get the address of a struct from which you know the address of a member and its name.
 	It's exactly what it's needed to make this type of list work:<br> 
 	```C
-	struct data_struct_t *data = STRUCT_FROM_MEMBER(data_struct_t, node_ptr, node);
+	struct data_struct_t *data = STRUCT_FROM_MEMBER(struct data_struct_t, node_ptr, node);
 	```
 	And when I thought that things were getting better, the old style checker came back to ruin everything. As always
 	it has a little
@@ -260,7 +260,7 @@ errors (the code won't even compile anymore if they are fixed).***
     </a>
     with these macros. :( 
 
-5. ## Hashmap Implementations <a name="hmap"></a>
+5. ## Hashmap Implementation <a name="hmap"></a>
 
 	The hash map that I implemented is simply an array of linked lists of map_entry_t:<br>
 	```C
@@ -280,7 +280,7 @@ errors (the code won't even compile anymore if they are fixed).***
 	int sizetcmp(void *key1, void *key2); // Used for keys of type size_t.
 	```
 
-	The destructor that I implemented: `simple_entry_destroy` should be used for any hash map that
+	The destructor that I implemented: `simple_entry_destroy` should be used for any hashmap that
 	uses simple data types for the key and value. By simple data types I mean: any primitive type (int,
 	float, char, double etc), strings (in this case `void *value` can be casted to `(char *)value`,
 	and that's the string). It can also be used for any 'static' structs (structs that do not include 
@@ -290,7 +290,7 @@ errors (the code won't even compile anymore if they are fixed).***
 
 5. ## Set Implementation <a name="set"></a>
 	
-	To properly implement Born Kerbosch's algorithm, I needed a good set (unique lists) implementation.
+	To properly implement Born Kerbosch's algorithm, I needed a good set (unique list) implementation.
 	The `set_t` is just a linked list of `set_element_t`. It is also pretty similar to the hashmap,
 	as the data is part of the set element (the same way the data is part of the `map_entry_t`).
 	```C
@@ -330,9 +330,9 @@ errors (the code won't even compile anymore if they are fixed).***
 	extra data on the side to create a pretty handy graph.
 	```C
 	struct graph_t {
-		struct linked_list_t *nodes; // Honestly, I should have named this member 'gnodes'.
-		struct map_t *highway;
-		struct linked_list_t *old_ids;
+	    struct linked_list_t *nodes; // Honestly, I should have named this member 'gnodes'.
+	    struct map_t *highway;
+	    struct linked_list_t *old_ids;
 	}
 	```
 	As you can see, there are these extra members: `highway` and `old_ids`. These are part of the graph's ID system.
@@ -340,19 +340,19 @@ errors (the code won't even compile anymore if they are fixed).***
 	An element of the graph (a gnode) is just 2 lists of links:
 	```C
 	struct graph_node_t {
-		size_t id;
-		struct linked_list_t *out_links;
-		struct linked_list_t *in_links;
-		struct list_node_t node;
+	    size_t id;
+	    struct linked_list_t *out_links;
+	    struct linked_list_t *in_links;
+	    struct list_node_t node;
 	}
 	```
-	The `out_links` list contains links that start from this node to other nodes. <br>
-	Intuitively, `in_links` contains links that end in this node and start in other nodes.<br>
-	The link just contains a pointer the other graph node:
+	The `out_links` list contains links that start from this node and end in other nodes. <br>
+	Intuitively, `in_links` contains links that end in this node and start from other nodes.<br>
+	The link just contains a pointer to the other graph node:
 	```C
 	struct graph_link_t {
-		struct graph_node_t *link; // I think gnode could be another way to name this member. 
-		struct list_node_t node;
+	    struct graph_node_t *link; // I think gnode could be another way to name this member. 
+	    struct list_node_t node;
 	}
 	```
 	I think that you already guessed this by now, but yes, the graph node uses the same concept
@@ -363,14 +363,14 @@ errors (the code won't even compile anymore if they are fixed).***
 	graph_node_t graph_node_create(void);
 	void graph_node_destroy(graph_node_t gnode);
 	```
-	These 2 functions will to just that. They work with graph nodes declared on the stack.
+	These 2 functions will do just that. They work with graph nodes declared on the stack.
 	I don't recommend using graph nodes allocated on the heap, as that's just one extra (and useless) step, as the 
 	memory used by the `gnode` member will already be on the heap (when you allocate a new data struct).
 
 7. ## Graph's ID Sytem
 
 	For the sake of ease-of-use I implemented a basic ID system for the graph.<br>
-	You SHOULD **NOT** really interact with it externally.<br>
+	You SHOULD **NOT** really interact with it from outside (like a private member of a class).<br>
 	This is why these functions exist and do what they do:
 	```C
 	graph_add_node() // -> This function adds a new node to the graph and returns the node's ID.
@@ -392,7 +392,7 @@ errors (the code won't even compile anymore if they are fixed).***
 	- Secondly, we only track the beginning of a block (we can verify in O(1) time if ID `block_start + 1` is free or not).
 	- Thirdly, when adding a node, we check if ID `graph->nodes->size` is free to use (if we add the n'th node, we assign ID `n-1`).
 	- Fourthly, if we can't, we assign it the first ID found in `old_ids`.
-	- Fifthly?, when a node it's removed, also remove all nodes in `old_ids` that are bigger or equal to `graph->node->size` (
+	- Fifthly?, when a node it's removed, also remove all nodes in `old_ids` that are bigger or equal to `graph->nodes->size` (
 	we don't want to accidentaly assign the same ID to multiple nodes).
 	- Lastly, blocks are added to the `old_ids` list only if `removed_id - 1` is not available to use.
 
@@ -442,21 +442,21 @@ errors (the code won't even compile anymore if they are fixed).***
 
 	graph_t *my_graph = graph_create(example_destructor);
 
-	// The graph nodes provide a basic ID system: the highway.
+	// The graph provides a basic ID system: the highway.
 	// If you want to use another one, feel free.
 	// Just don't overwrite the graph's system.
 
 	// Allocate your struct.
-	example_t *new_example = malloc(sizeof(example_t)); // Implicit cast ik.
+	example_t *new_example = malloc(sizeof(*new_example));
 	new_example->some_data = 56;
-	new_example->some_string = another_string;
+	new_example->some_string = malloc(STRING_SIZE);
 	...
 
 	// Now, add the new node to the graph.
 	new_example->gnode = graph_node_create();
 	size_t new_id = graph_add_node(my_graph, &new_example->gnode);
 
-	// You can also keep track of where you data is in the graph.
+	// You can also keep track of where the data is in the graph.
 	// But you have to do this on your own ;).
 	keep_track_of_the_data(data_tracker, new_example, new_id);
 
@@ -501,7 +501,7 @@ After finishing this homework, we learned a lot about designing a very basic (an
 There is a long way before this project could be called a 'social media app', that much we can tell. Nevertheless, 
 it is a good starting point in understanding the procedures of managing a big, interconnected system. There were a lot of
 places where stuff that was working was left alone, even if there were better way to do them. If it works, don't fix it. 
-Having a 'real world' example of graph usage is really usefull method of understanding how to design a good graph implementation.
+Having a 'real world' example of graph usage is a really usefull method of understanding how to design a good graph implementation.
 I (Andrei), can say that I did a pretty good job with the graph, even if there are places where it's kind of squeaky.
 
 Pentru corectare mai usoara (in caz ca este proces automat):
